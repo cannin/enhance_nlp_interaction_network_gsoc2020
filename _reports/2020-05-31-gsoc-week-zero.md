@@ -56,4 +56,4 @@ During the community bonding period, I was assigned the following work:
 ## Conclusion  
 
 It has been a great learning experience so far. I had very little experience in working with python for web services, but I am using it now since the first day of Google Summer of Code 2020. I am enjoying the journey.  
-My Mentors,are constantly helping me. They is just a message away, whenever I require their guidance. I am thankful to themm.
+My Mentors,are constantly helping me. They are just a message away, whenever I require their guidance. I am thankful to them.
