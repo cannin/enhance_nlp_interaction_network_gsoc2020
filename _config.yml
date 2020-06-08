@@ -1,4 +1,5 @@
 theme: jekyll-theme-minimal
+title: Enhance NLP Interaction Network GSoC 2020
 collections:
   reports:
     output: true
