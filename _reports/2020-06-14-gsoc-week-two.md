@@ -5,7 +5,7 @@ tags: [gsoc, weekly report, coding period ]
 author: Priti Shaw
 ---
 
-This week our focus was to convert the java(GenericBatchNew) code to python using pyjinius for extracting the MESH terms.  
+This week our focus was to convert the java(GenericBatchNew) code to python using Pyjnius for extracting the MESH terms.  
 
 ## Work Progress  
 
