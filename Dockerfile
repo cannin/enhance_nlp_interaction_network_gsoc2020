@@ -1,23 +1,25 @@
-FROM openjdk:11.0.3-jdk
+FROM rocker/shiny-verse:3.6.3
 
-RUN apt-get update
-RUN apt-get install -y python3-pip
-
+# Install OpenJDK-11
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends openjdk-11-jre && \
+    apt-get install wget
+    
 # add requirements.txt, written this way to gracefully ignore a missing file
 COPY . .
+
+RUN wget https://bootstrap.pypa.io/get-pip.py
+RUN python3 get-pip.py
+RUN rm get-pip.py
+
+
 RUN ([ -f requirements.txt ] \
     && pip3 install --no-cache-dir -r requirements.txt) \
         || pip3 install --no-cache-dir jupyter jupyterlab
 
+
 USER root
 
-# Download the kernel release
-RUN curl -L https://github.com/SpencerPark/IJava/releases/download/v1.3.0/ijava-1.3.0.zip > ijava-kernel.zip
-
-# Unpack and install the kernel
-RUN unzip ijava-kernel.zip -d ijava-kernel \
-  && cd ijava-kernel \
-  && python3 install.py --sys-prefix
 
 # Set up the user environment
 
