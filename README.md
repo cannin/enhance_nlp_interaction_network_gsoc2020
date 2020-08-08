@@ -15,6 +15,7 @@ This repository contains the code used to get information required for analysis.
 mti_email_id: email@address.com
 mti_username: Username
 mti_password: password
+pmid_threshold: 20
 ```
 If you do not have account, register at https://utslogin.nlm.nih.gov/cas/login
 

@@ -137,4 +137,4 @@ installPackages <- function(file=NULL, packages=NULL,
   cat("Missing packages: ", paste(packageNames[idx], collapse=", "), "\n")
 }
 
-installPackages("./r-requirements.dcf")
+installPackages("./dependencies/r-requirements.dcf")
