@@ -1,0 +1,702 @@
+---
+title: "Reactome Failed Search Analysis"
+author: "Augustin Luna"
+date: '`r Sys.Date()`'
+output:
+  html_notebook: 
+    depth: 3
+    number_sections: yes
+    toc: yes
+  html_document:
+    depth: 3
+    number_sections: yes
+    toc: yes
+---
+  
+```{r setup, echo=FALSE, warning=FALSE, message=FALSE}
+library("knitr")
+opts_chunk$set(fig.align="center", fig.width=6, fig.height=6, dpi=96)
+
+library(reticulate)
+knitr::knit_engines$set(python3 = reticulate::eng_python)
+```
+
+# PURPOSE
+
+Analysis of failed Reactome searches 
+
+# LOAD LIBRARIES
+
+```{r}
+library(readr)
+library(magrittr)
+
+# Interactive tables in notebook
+library(DT)
+
+# TF-IDF calculation
+library(tidytext)
+
+# Reactome hierarchy
+library(igraph)
+
+# Cosine similarity
+library(lsa)
+
+# Access Python for Text-Mining
+library(reticulate)
+
+# Analyze MESH recurrence of failed search terms  
+library(listutils) # From: https://github.com/cannin/listutils
+```
+
+# PARAMETERS 
+```{r}
+# NOTEBOOK ----
+max_dt_table_display <- 100
+
+# PYTHON ----
+python_virtualenv <- "~/.local/share/virtualenvs/indra_test-0O3lqQDV"
+
+# GENERAL ----
+# Only consider terms with at least this many failed search terms
+# NOTE: Only for basic analyses 
+min_failed_search_hits <- 10
+
+# RANK TERMS ----
+# Rank failed searches 
+top_n_reactome_journals <- 10
+min_indra_query_term_count <- 0
+min_indra_statement_count <- 0
+min_pmc_citation_count <- 0
+min_oc_citation_count <- 0
+
+# REACTOME ----
+# Reactome parameters 
+reactome_organism <- "Homo sapiens"
+
+failed_searches_file <- "failed_searches_queries_2019.csv"
+
+# Data in 'reactome_20200609' is directly from https://reactome.org/download/current/
+reactome_pathway_info_file <- "reactome_20200609/ReactomePathways.txt"
+reactome_pathway_hierarchy_file <- "reactome_20200609/ReactomePathwaysRelation.txt"
+reactome_pathway_reaction_mapping_file <- "reactome_20200609/reactome_reaction_exporter_v73.txt"
+reactome_reaction_pmid_mapping_file <- "reactome_20200609/ReactionPMIDS.txt"
+
+# MESH METADATA ----
+# From: https://gist.github.com/PritiShaw/9ad43241c99f727afd04efbe0bdb77e8
+reactome_pmid_metadata_file <- "all_20200704.tsv" 
+
+# From: https://gist.github.com/PritiShaw/6732c69bfbd4a169f7cdae448351d06e
+failed_searches_metadata_file <- "failed_searches_output_20200720.tsv"
+
+# USER QUERY ----
+# Failed query to be mapped to Reactome pathways
+query <- "MATN2"
+
+# OUTPUT ---- 
+all_mesh_by_top_level_pathways_file <- "all_mesh_by_top_level_pathways_full.txt"
+top_level_pathways_file <- "top_level_pathways.txt"
+indra_stmt_html_file <- "indra_output.html"
+indra_stmt_json_file <- "indra_output.json"
+```
+
+# LOAD DATA
+## Failed Searches 
+```{r}
+t1 <- read.csv(failed_searches_file, ",", header=TRUE, quote="", 
+               comment.char="", stringsAsFactors = FALSE)
+t2 <- t1[grepl("^[0-9]+$", t1$Hits),]
+t2$Hits <- as.numeric(t2$Hits)
+failed_searches <- t2[t2$Hits >= min_failed_search_hits,]
+
+DT::datatable(head(failed_searches, max_dt_table_display), rownames=FALSE)
+```
+
+## Reactome Hierachy Mapping
+### Calculate Map Reactome Pathways to Hierachy
+
+```{r, eval=FALSE}
+# Read Reactome data 
+reactomePathwayInfo <- read_tsv(reactome_pathway_info_file, col_names=c("pathway_id", "pathway_name", "organism"), col_types = cols(
+  pathway_id = col_character(),
+  pathway_name = col_character(),
+  organism = col_character()
+))
+
+reactomePathwayHierarchy <- read_tsv(, col_names=c("parent_id", "child_id"), col_types = cols(
+  parent_id = col_character(),
+  child_id = col_character()
+))
+
+# Limit to humans
+reactomePathwayInfo <- reactomePathwayInfo[which(reactomePathwayInfo$organism == reactome_organism),]
+
+# Double-check the pathway info and relation info data matches up
+reactomePathwayHierarchy <- reactomePathwayHierarchy[which(reactomePathwayHierarchy$parent_id %in% reactomePathwayInfo$pathway_id | reactomePathwayHierarchy$child_id %in% reactomePathwayInfo$pathway_id),]
+
+# If entry in parent_id is not a child then it is a top-level pathway. Similar for child (bottom)-most
+topLevelPathways <- setdiff(reactomePathwayHierarchy$parent_id, reactomePathwayHierarchy$child_id)
+bottomLevelPathways <- setdiff(reactomePathwayHierarchy$child_id, reactomePathwayHierarchy$parent_id)
+
+# Total Pathways 
+length(unique(c(reactomePathwayHierarchy$parent_id, reactomePathwayHierarchy$child_id)))
+
+# Construct Graph
+tmpDf <- data.frame(parent_id="reactome", child_id=topLevelPathways, stringsAsFactors=FALSE)
+t1 <- reactomePathwayHierarchy
+dat <- rbind(tmpDf, t1)
+
+g <- graph_from_data_frame(dat, directed = TRUE)
+
+# Find paths between parents and children
+pathstrings <- NULL 
+
+for(i in 1:length(bottomLevelPathways)) {
+  tmp <- all_simple_paths(g, from="reactome", to=bottomLevelPathways[i], mode="out")
+  path <- paste(V(g)$name[as.vector(tmp[[1]])], collapse="|") 
+  pathstrings <- c(pathstrings, path)
+}
+
+# Label the top-level pathway for all pathways and put into a data.frame
+pathwaysDf <- data.frame(topLevelName=character(0), topLevelUri=character(0), pathwayName=character(0), pathwayUri=character(0), stringsAsFactors=FALSE)
+for(i in 1:length(pathstrings)) {
+  curSplit <- strsplit(pathstrings[i], "\\|")[[1]]
+  for(j in 2:length(curSplit)) {
+    #i <- 3 
+    
+    topLevelName <- reactomePathwayInfo$pathway_name[which(reactomePathwayInfo$pathway_id == curSplit[2])]
+    topLevelUri <- curSplit[2]
+    
+    pathwayName <- reactomePathwayInfo$pathway_name[which(reactomePathwayInfo$pathway_id == curSplit[j])]
+    pathwayUri <- curSplit[j]
+    
+    tmpPathwaysDf <- data.frame(topLevelName, topLevelUri, pathwayName, pathwayUri, stringsAsFactors=FALSE)
+    pathwaysDf <- rbind(pathwaysDf, tmpPathwaysDf)
+  }
+}
+
+# Remove duplicates and save output 
+pathwaysDf <- unique(pathwaysDf)
+write.table(pathwaysDf, "reactomeHierarchyMapping.txt", sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+
+DT::datatable(head(pathwaysDf, max_dt_table_display), rownames = FALSE)
+```
+
+### Load Pre-Computed Reactome Hierachy Mapping
+Load pre-computed results
+
+```{r}
+reactomeHierarchyMapping <- read_tsv("reactomeHierarchyMapping.txt", col_types=cols(
+  topLevelName = col_character(),
+  topLevelUri = col_character(),
+  pathwayName = col_character(),
+  pathwayUri = col_character()
+))
+```
+
+## Pre-Computed Reactome MESH Data
+```{r}
+dat <- read_tsv(reactome_pmid_metadata_file, col_types = cols(
+  PMID = col_double(),
+  JOURNAL_TITLE = col_character(),
+  YEAR = col_double(),
+  PMCID = col_character(),
+  MESH_TERMS = col_character()
+))
+
+DT::datatable(head(dat, max_dt_table_display), rownames = FALSE)
+```
+
+## Reactome Reaction Level Information
+### Pathway Reaction Mapping
+```{r}
+pathway_reaction_mapping <- read.table(reactome_pathway_reaction_mapping_file, header=TRUE, sep="\t", quote="", comment.char="", stringsAsFactors=FALSE)
+pathway_reaction_mapping <- pathway_reaction_mapping[, c("pathway_id", "reaction_id")]
+
+DT::datatable(head(pathway_reaction_mapping, max_dt_table_display), rownames = FALSE)
+```
+
+### Reaction PMID Mapping
+```{r}
+reaction_pmid_mapping <- read.table(reactome_reaction_pmid_mapping_file, header=FALSE, sep="\t", stringsAsFactors=FALSE)
+colnames(reaction_pmid_mapping) <- c("reaction_id", "pmid")
+
+DT::datatable(head(reaction_pmid_mapping, max_dt_table_display), rownames = FALSE)
+```
+
+# BASIC ANALYSIS OF REACTOME PMIDs
+## Journals
+```{r}
+d1 <- table(dat$JOURNAL_TITLE) %>% sort(., decreasing = TRUE)
+allJournalFreq <- data.frame(journal_title=names(d1), freq=as.vector(d1), stringsAsFactors = FALSE)
+
+# List of PMC journals
+# pmc_journals <- read_tsv("https://gist.githubusercontent.com/cannin/206561bc05c419b268d80f278de8b0b3/raw/9e4e25f936d4e874f302cb7671e7f62c388d1cc2/pmc_journal_list_20200113.txt", col_types = cols(
+#   journal = col_character()
+# ))
+
+DT::datatable(head(allJournalFreq, max_dt_table_display), rownames = FALSE)
+```
+
+## MESH Terms
+```{r}
+d3 <- strsplit(dat$MESH_TERMS, "\\|")
+d4 <- d3 %>% unlist %>% gsub('^\\*', "", .)
+d5 <- table(d4) %>% sort(., decreasing = TRUE)
+allMeshFreq <- data.frame(mesh_term=names(d5), freq=as.vector(d5), stringsAsFactors = FALSE)
+
+DT::datatable(head(allMeshFreq, max_dt_table_display), rownames = FALSE)
+```
+
+## Year
+```{r}
+d7 <- table(dat$YEAR) %>% sort(., decreasing = TRUE)
+allYearFreq <- data.frame(year=names(d7), freq=as.vector(d7), stringsAsFactors = FALSE)
+plot(density(dat$YEAR))
+```
+
+# IDENTIFY PATHWAY SPECIFIC TERMS 
+## Merge Reactome Reaction Level Information and with Hierarchy Information
+```{r}
+rp9 <- merge(pathway_reaction_mapping, reaction_pmid_mapping, by="reaction_id", all=TRUE)
+rp9 <- rp9[complete.cases(rp9),]
+
+pathway_pmid_mapping <- merge(rp9, reactomeHierarchyMapping, by.x="pathway_id", by.y="pathwayUri", all.x=FALSE, all.y=TRUE)
+pathway_pmid_mapping <- pathway_pmid_mapping[, c("pathway_id", "pmid", "topLevelName", "topLevelUri", "pathwayName")]
+pathway_pmid_mapping <- unique(pathway_pmid_mapping)
+pathway_pmid_mapping <- pathway_pmid_mapping[complete.cases(pathway_pmid_mapping),]
+
+DT::datatable(head(pathway_pmid_mapping, max_dt_table_display), rownames = FALSE)
+```
+
+## Get Top Level Pathways for Iterations
+```{r}
+topLevelPathways <- pathway_pmid_mapping$topLevelName %>% unique
+topLevelPathways
+```
+
+## Get MESH Term Frequency by Top Level Pathways Table
+```{r}
+allMeshByTopLevelPathways <- data.frame(pathway_name=character(0), mesh_term=character(0), freq=numeric(0), stringsAsFactors=FALSE)
+tmpAllMeshByTopLevelPathwaysFull <- allMeshByTopLevelPathways
+allMeshTerms <- strsplit(dat$MESH_TERMS, "\\|") %>% unlist %>% gsub('^\\*', "", .) %>% unique
+
+for(i in 1:length(topLevelPathways)) {
+  #i <- 10
+  rp4 <- pathway_pmid_mapping[pathway_pmid_mapping$topLevelName == topLevelPathways[i], ]
+  head(rp4)
+
+  rp5 <- merge(rp4, dat, by.x="pmid", by.y="PMID", all.x=TRUE)
+  rp5 <- rp5[, c("pathway_id", "pmid", "topLevelName", "topLevelUri", "pathwayName", "JOURNAL_TITLE", "YEAR", "MESH_TERMS")]
+
+  tmpMeshTerms <- data.frame(mesh_term=allMeshTerms, freq=0, stringsAsFactors=FALSE)
+  tmpMeshTerms <- tmpMeshTerms[order(tmpMeshTerms$mesh_term),]
+
+  ## MESH TERMS
+  d3 <- strsplit(rp5$MESH_TERMS, "\\|")
+  d4 <- d3 %>% unlist %>% gsub('^\\*', "", .)
+  d5 <- table(d4) %>% sort(., decreasing = TRUE)
+  partialMeshFreq <- data.frame(mesh_term=names(d5), freq=as.vector(d5), stringsAsFactors=FALSE)
+  partialMeshFreq <- partialMeshFreq[order(partialMeshFreq$mesh_term),]
+
+  tmpDf <- partialMeshFreq
+  #tmpDf$prcnt <- round(tmpDf$freq / sum(tmpDf$freq), 4)*100
+  #tmpDf$cumsum <- cumsum(tmpDf$prcnt)
+  tmpDf$pathway_name <- topLevelPathways[i]
+  allMeshByTopLevelPathways <- rbind(allMeshByTopLevelPathways, tmpDf)
+
+  tmpMeshTerms$freq[which(tmpMeshTerms$mesh_term %in% partialMeshFreq$mesh_term)] <- partialMeshFreq$freq
+  tmpDf <- tmpMeshTerms
+  #tmpDf$prcnt <- round(tmpDf$freq / sum(tmpDf$freq), 4)*100
+  #tmpDf$cumsum <- cumsum(tmpDf$prcnt)
+  tmpDf$pathway_name <- topLevelPathways[i]
+  tmpAllMeshByTopLevelPathwaysFull <- rbind(tmpAllMeshByTopLevelPathwaysFull, tmpDf)
+}
+```
+
+## View Output
+```{r}
+orgAllMeshByTopLevelPathways <- allMeshByTopLevelPathways
+allMeshByTopLevelPathways <- orgAllMeshByTopLevelPathways
+
+DT::datatable(head(allMeshByTopLevelPathways, max_dt_table_display), rownames = FALSE)
+```
+
+## Calculate TF-IDF and Merge with MESH Term Frequency Table
+```{r}
+# NOTE: The tbl parameter can only contain rows where the n column is > 0; if every term is enumerated for every document then IDF will be 0 everywhere
+allMeshByTopLevelPathways <- allMeshByTopLevelPathways %>%
+  bind_tf_idf(mesh_term, pathway_name, freq)
+allMeshByTopLevelPathways$tf_idf <- round(allMeshByTopLevelPathways$tf_idf, 6)
+allMeshByTopLevelPathways <- allMeshByTopLevelPathways[order(-allMeshByTopLevelPathways$tf_idf),]
+
+allMeshByTopLevelPathwaysFull <- merge(tmpAllMeshByTopLevelPathwaysFull, allMeshByTopLevelPathways, by=c("mesh_term", "freq", "pathway_name"), all.x = TRUE)
+
+# NOTE: Default sorting needed later
+#allMeshByTopLevelPathwaysFull <- allMeshByTopLevelPathwaysFull[order(-allMeshByTopLevelPathwaysFull$tf_idf),]
+```
+
+## Save Output 
+```{r}
+write_tsv(allMeshByTopLevelPathwaysFull, all_mesh_by_top_level_pathways_file)
+write_lines(topLevelPathways, top_level_pathways_file)
+```
+
+## Calculate Percentile Rank and Append 
+
+Percentile rank is easier to understand than TF-IDF 
+
+```{r, eval=FALSE}
+ecdf_func_lst <- sapply(topLevelPathways, function(x) {
+  ecdf(allMeshByTopLevelPathways$tf_idf[allMeshByTopLevelPathways$pathway_name == x])
+})
+
+prcnts <- sapply(1:nrow(allMeshByTopLevelPathways), function(i) {
+  pathway <- allMeshByTopLevelPathways$pathway_name[i]
+  tmp_func <- ecdf_func_lst[[pathway]]
+  round(tmp_func(allMeshByTopLevelPathways$tf_idf[i]), 3)
+}, USE.NAMES = FALSE)
+
+allMeshByTopLevelPathways$tf_idf_prcnt <- prcnts
+
+DT::datatable(head(allMeshByTopLevelPathways, max_dt_table_display), rownames = FALSE)
+```
+
+## Quick Analyses (IGNORE)
+```{r, eval=FALSE}
+a1 <- table(rp5$JOURNAL_TITLE) %>% sort(., decreasing = TRUE)
+a2 <- data.frame(journal_title=names(a1), freq=as.vector(a1))
+head(a2, 10)
+
+a3 <- table(rp5$YEAR) %>% sort(., decreasing = TRUE)
+a4 <- data.frame(year=names(a3), freq=as.vector(a3))
+plot(density(rp5$YEAR[!is.na(rp5$YEAR)]))
+
+a3 <- table(rp5$pathwayName) %>% sort(., decreasing = TRUE)
+a4 <- data.frame(pathway=names(a3), freq=as.vector(a3))
+
+# Sample
+n1 <- allMeshByTopLevelPathways$pathway_name[grepl("calcium",  allMeshByTopLevelPathways$mesh_term, ignore.case=TRUE)]
+head(n1, 30) %>% unique
+```
+
+# ANALYZE FAILED MESH TERMS
+## Load Pre-Processed Failed Search Data (with Citations, MESH, INDRA Information)
+
+NOTE: 20 PubMed papers retrieved for each term
+
+```{r}
+failed_search_dat <- read_tsv(failed_searches_metadata_file, col_types = cols(
+  QUERY_TERM = col_character(),
+  PMID = col_character(),
+  JOURNAL_TITLE = col_character(),
+  YEAR = col_double(),
+  PMCID = col_character(),
+  DOI = col_character(),
+  PMC_CITATION_COUNT = col_double(),
+  INDRA_STATEMENT_COUNT = col_double(),
+  MESH_TERMS = col_character()
+))
+
+allMeshByTopLevelPathwaysFull <- read_tsv(all_mesh_by_top_level_pathways_file, col_types = cols(
+  mesh_term = col_character(),
+  freq = col_double(),
+  pathway_name = col_character(),
+  tf = col_double(),
+  idf = col_double(),
+  tf_idf = col_double()
+))
+
+topLevelPathways <- read_lines(top_level_pathways_file)
+```
+
+## Rank Failed Searches 
+### All Failed Search Terms 
+```{r}
+#query_term_indra_cnt_df <- unique(failed_search_dat[, c("QUERY_TERM", "INDRA_QUERY_TERM_STATEMENT_COUNT")])
+
+i1 <- which(failed_search_dat$JOURNAL_TITLE %in% allJournalFreq$journal_title[1:top_n_reactome_journals])
+t1 <- failed_search_dat[i1,]
+DT::datatable(head(t1, max_dt_table_display), rownames = FALSE)
+```
+
+### Filtered Failed Search Terms 
+
+Displayed are terms with the most papers passing filters
+
+```{r}
+t2 <- t1[t1$INDRA_QUERY_TERM_STATEMENT_COUNT > min_indra_query_term_count & 
+           t1$INDRA_STATEMENT_COUNT > min_indra_statement_count & 
+           (t1$PMC_CITATION_COUNT > min_pmc_citation_count | t1$OC_CITATION_COUNT > min_oc_citation_count),]
+t3 <- table(t2$QUERY_TERM) %>% sort(., decreasing = TRUE) # %>% head(., 20)
+filtered_dat <- data.frame(query=names(t3), indra_cnt=as.vector(t3), stringsAsFactors = FALSE)
+
+DT::datatable(head(filtered_dat, max_dt_table_display), rownames = FALSE)
+```
+
+## Select Failed Search Term to Map
+```{r}
+# Rank by available text-mining results
+tmp_cnt <- table(failed_search_dat$QUERY_TERM) %>% sort(., decreasing = TRUE) %>% head
+query_tmp <- tapply(failed_search_dat$INDRA_STATEMENT_COUNT, failed_search_dat$QUERY_TERM, sum) %>% sort(., decreasing = TRUE)
+
+# IGNORE?
+# indra_cnts_df <- data.frame(query=names(query_tmp), indra_cnt=as.vector(query_tmp), stringsAsFactors = FALSE)
+# head(query_tmp, 25)
+# query_2 <- tapply(failed_search_dat$PMC_CITATION_COUNT, failed_search_dat$QUERY_TERM, sum) %>% sort(., decreasing = TRUE)
+# pmc_cnts_df <- data.frame(query=names(query_2), pmc_cnt=as.vector(query_2))
+# head(query_2, 25)
+# query_3 <- merge(pmc_cnts_df, indra_cnts_df, by="query")
+
+# Manually select
+if(is.null(query)) {
+  query <- names(query_tmp)[1]
+}
+
+# Selected failed search term
+query
+```
+
+## Generate TF-IDF for Failed Search Term
+```{r}
+i1 <- which(failed_search_dat$QUERY_TERM == query)
+t1 <- failed_search_dat$MESH_TERMS[i1]
+i2 <- which(!is.na(t1))
+t2 <- t1[i2]
+t3 <- paste(t2, collapse = "|") %>% strsplit(., "\\|")
+mesh_terms <- t3[[1]]
+
+# Term weights 
+termWeights <- tapply(allMeshByTopLevelPathwaysFull$idf, allMeshByTopLevelPathwaysFull$mesh_term, mean, na.rm=TRUE)
+termWeights[is.na(termWeights)] <- 0
+
+# Get vector
+t0 <- table(mesh_terms) %>% sort
+tmp <- data.frame(mesh_term=names(t0), cnt=as.vector(t0), stringsAsFactors = FALSE)
+tmp <- tmp[order(tmp$mesh_term),]
+
+tmpMeshTerms <- data.frame(mesh_term=allMeshTerms, cnt=0, stringsAsFactors=FALSE)
+tmpMeshTerms <- tmpMeshTerms[order(tmpMeshTerms$mesh_term),]
+
+i1 <- which(tmpMeshTerms$mesh_term %in% tmp$mesh_term)
+i2 <- which(tmp$mesh_term %in% tmpMeshTerms$mesh_term)
+tmpMeshTerms$cnt[which(tmpMeshTerms$mesh_term %in% tmp$mesh_term)] <- tmp$cnt[i2]
+
+# NOTE: MUST BE SORTED!!!
+#tmpMeshTerms$freq_org <- tmpMeshTerms$freq
+tmpMeshTerms$tf <- tmpMeshTerms$cnt / sum(tmpMeshTerms$cnt) #round(tmpMeshTerms$cnt / sum(tmpMeshTerms$cnt), 4)*100
+tmpMeshTerms$idf <- termWeights
+tmpMeshTerms$tf_idf <- tmpMeshTerms$tf*tmpMeshTerms$idf
+
+#tmpMeshTerms$mesh_term[i1]
+#tmp$mesh_term[i2]
+#tmpMeshTerms[which(tmpMeshTerms$tf_idf > 0),]
+non_zero_terms <- tmpMeshTerms[which(tmpMeshTerms$tf_idf > 0),]
+non_zero_terms <- non_zero_terms[order(-non_zero_terms$tf_idf),]
+non_zero_terms$query <- query
+
+DT::datatable(head(non_zero_terms, max_dt_table_display), rownames = FALSE)
+```
+
+# CALCULATE SIMILARITY TO REACTOME PATHWAYS
+```{r}
+t0 <- allMeshByTopLevelPathwaysFull
+t0$tf_idf[is.na(t0$tf_idf)] <- 0
+t1 <- matrix(NA, nrow=(length(topLevelPathways)+1), ncol=length(allMeshTerms))
+for(i in 1:length(topLevelPathways)) {
+  t1[(i+1),] <- t0$tf_idf[t0$pathway_name == topLevelPathways[i]]
+}
+
+t1[1,] <- tmpMeshTerms$tf_idf
+
+# Cosine of 2 vectors 
+# a <- t1[1,]
+# b <- t1[2,]
+# result <- lsa::cosine(a, b)
+#result
+
+result <- lsa::cosine(t(t1))
+#result
+
+r1 <- result[1,2:ncol(result)]
+names(r1) <- topLevelPathways
+tmp <- r1 %>% sort(., decreasing = TRUE)
+
+pathway_scores <- data.frame(pathway=names(tmp), score=as.vector(tmp), stringsAsFactors = FALSE)
+DT::datatable(head(pathway_scores, max_dt_table_display), rownames = FALSE)
+```
+
+# RETRIEVE INDRA TEXT-MINING (PYTHON)
+## Set up Python Environment
+```{r}
+use_virtualenv(python_virtualenv)
+```
+
+## Retrieve INDRA Results 
+
+NOTES: 
+
+* Using reticulate to communicate between R and Python (r.query is the failed search term, see https://rstudio.github.io/reticulate/articles/r_markdown.html)
+* Running everything together because Python variables are not saved between chunks
+* Python code set to not run or otherwise the code is not in the final RMarkdown HTML (bug with rmarkdown?)
+
+```{python3, message=TRUE, warning=TRUE, eval=FALSE}
+import os 
+from indra.sources import indra_db_rest
+from indra.assemblers.html.assembler import HtmlAssembler
+from indra.statements.statements import stmts_to_json, stmts_from_json, stmts_from_json_file
+
+import requests 
+from urllib.parse import urljoin
+
+import json
+from jsonpath_ng import jsonpath
+from jsonpath_ng.ext import parse
+
+def get_jsonpath(json_file, json_str, jsonpath_expr_str): 
+    """Filter JSON with JSONPath
+
+    Args:
+        json_file (str): File name
+        json_str (str): String representation of a JSON file
+        jsonpath_expr_str (str): JSONPath expression 
+
+    Returns:
+        list: filtered list of Python objects
+
+    """
+
+    if json_file is None: 
+        dat = json.loads(json_str)
+    else: 
+        with open(json_file) as f:
+            dat = json.load(f)
+
+    jsonpath_expr = parse(jsonpath_expr_str)
+
+    results = jsonpath_expr.find(dat)
+
+    results_list = []
+
+    for match in results:
+        results_list.append(match.value)
+
+    return(results_list)
+
+# PARAMETERS ----
+# NOTE: r.PARAMETERS come from r
+## Setup API URLs
+os.environ["INDRA_DB_REST_URL"] = "https://db.indra.bio"
+grounding_service_url = 'http://grounding.indra.bio/'
+
+## Failed Term
+failed_search_term = 'BRAF' # manual
+failed_search_term = 'GXYLT1'
+
+# Check if running in R
+if r is None: 
+  failed_search_term = 'MATN2'
+  indra_stmt_json_file = 'indra_output.json'
+  indra_stmt_html_file = 'indra_output.html'
+else: 
+  failed_search_term = r.query
+  indra_stmt_json_file = r.indra_stmt_json_file
+  indra_stmt_html_file = indra_stmt_html_file
+
+# GROUND TERM ----
+resp = requests.post(urljoin(grounding_service_url, 'ground'),
+                     json={'text': failed_search_term})
+grounding_results = resp.json()
+grounding_results 
+
+# TODO: Test if grounding_results has entries
+term_id = grounding_results[0]['term']['id']
+term_db = grounding_results[0]['term']['db']
+term = '27482@HGNC' # manual
+term = term_id + '@' + term_db
+term
+
+# GET STATEMENTS ----
+out = indra_db_rest.get_statements(agents=[term])
+#out.statements
+len(out.statements)
+
+stmts = out.statements
+stmts_json = stmts_to_json(stmts)
+
+# Save to file to make use of JSONPath for search the returned statements
+with open('tmp.json', 'w', encoding='utf-8') as f:
+    json.dump(stmts_json, f, ensure_ascii=False, indent=4)
+
+# Filter terms to only keep REACH in order to ignore results that are NOT from text-mining
+json_file = 'tmp.json'
+jsonpath_expr_str = "$[?(@.evidence[*].source_api == 'reach')]"
+stmts_json = get_jsonpath(json_file, None, jsonpath_expr_str)
+
+# Output filtered statements to JSON
+with open(indra_stmt_json_file, 'w', encoding='utf-8') as f:
+    json.dump(stmts_json, f, ensure_ascii=False, indent=4)
+
+stmts = stmts_from_json_file(indra_stmt_json_file)
+
+# Collect extracted mechanisms in Assembler, assemble the model, and export to HTML
+ha = HtmlAssembler(stmts)
+
+# Output to HTML
+html = ha.make_model(template=None, with_grouping=True, add_full_text_search_link=True)
+ha.save_model(indra_stmt_html_file)
+```
+
+# ANALYZE RECURRENCE OF FAILED SEARCH TERMS
+```{r}
+tmp_dat <- failed_search_dat
+
+x0 <- tmp_dat[, c("MESH_TERMS", "QUERY_TERM")]
+x1 <- x0[complete.cases(x0),]
+x2 <- tapply(x1$MESH_TERMS, x1$QUERY_TERM, paste, collapse="|")
+x3 <- data.frame(query_term=names(x2), mesh_terms=as.vector(x2), stringsAsFactors = FALSE)
+
+# Make unique entries only
+x4 <- sapply(x3$mesh_terms, function(x) {
+  t1 <- strsplit(x, "\\|")[[1]] %>% gsub('^\\*', "", .) %>% sort %>% paste(., collapse = "|")
+}, USE.NAMES = FALSE)
+x3$mesh_terms <- x4
+
+#x3x <- x3$mesh_terms[1]
+x5 <- strsplit(x3$mesh_terms, "\\|")
+names(x5) <- x3$query_term
+
+x6 <- x5 %>% unlist
+x6 <- table(x6) %>% sort(., decreasing = TRUE)
+x7 <- data.frame(mesh_term=names(x6), freq=as.vector(x6), stringsAsFactors = FALSE)
+
+# Term weights 
+termWeights <- tapply(allMeshByTopLevelPathwaysFull$idf, allMeshByTopLevelPathwaysFull$mesh_term, mean, na.rm=TRUE)
+termWeights[is.nan(termWeights)] <- 0
+
+termWeightsDf <- data.frame(mesh_term=names(termWeights), idf=as.vector(termWeights), stringsAsFactors = FALSE)
+
+allFailedMeshTfIdf <- merge(x7, termWeightsDf, by="mesh_term", all.y=TRUE)
+
+allFailedMeshTfIdf$freq[is.na(allFailedMeshTfIdf$freq)] <- 0
+allFailedMeshTfIdf$tf <- allFailedMeshTfIdf$freq / sum(allFailedMeshTfIdf$freq)
+
+allFailedMeshTfIdf$tf_idf <- allFailedMeshTfIdf$tf*allFailedMeshTfIdf$idf
+allFailedMeshTfIdf <- allFailedMeshTfIdf[order(-allFailedMeshTfIdf$tf_idf),]
+
+DT::datatable(head(allFailedMeshTfIdf, max_dt_table_display), rownames = FALSE)
+```
+
+## Find Failed Terms with Given MESH
+```{r, eval=TRUE}
+query_mesh <- "RNA, Long Noncoding"
+x8 <- listutils::searchListOfVectors(query_mesh, x5, useNames = FALSE)
+x9 <- x8[[1]] %>% unique 
+names(x5)[x9] %>% head(., max_dt_table_display)
+```
+
+# SESSION INFO
+```{r}
+sessionInfo()
+```
