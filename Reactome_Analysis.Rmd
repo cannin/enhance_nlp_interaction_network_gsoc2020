@@ -85,10 +85,10 @@ reactome_reaction_pmid_mapping_file <- "reactome_20200609/ReactionPMIDS.txt"
 
 # MESH METADATA ----
 # From: https://gist.github.com/PritiShaw/9ad43241c99f727afd04efbe0bdb77e8
-reactome_pmid_metadata_file <- "all_20200704.tsv" 
+reactome_pmid_metadata_file <- "reactome_pmid_metadata.tsv" 
 
 # From: https://gist.github.com/PritiShaw/6732c69bfbd4a169f7cdae448351d06e
-failed_searches_metadata_file <- "failed_searches_output_20200720.tsv"
+failed_searches_metadata_file <- "failed_query_analysis_output.tsv"
 
 # USER QUERY ----
 # Failed query to be mapped to Reactome pathways
