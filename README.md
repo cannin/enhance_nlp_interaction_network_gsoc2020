@@ -24,6 +24,18 @@ Please note: Steps 1 and 2 can be performed parallely as they are independent.
 2. [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/cannin/enhance_nlp_interaction_network_gsoc2020/master?filepath=Reactome_Failed_Query_Analysis.ipynb) Run **Reactome_Failed_Query_Analysis.ipynb** after setting the initial parameters, this will generate `failed_query_analysis_output.tsv` file, which is required in step 3
 3. [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/cannin/enhance_nlp_interaction_network_gsoc2020/master?urlpath=rstudio) Follow instructions in **Reactome_Analysis.Rmd** to run it in RStudio and generate the analysis.
 
+## How to run locally using [jupyter/repo2docker]()
+
+1. **Installation**
+`pip install jupyter-repo2docker`
+2. **Build and Start Notebooks**
+`jupyter-repo2docker https://github.com/cannin/enhance_nlp_interaction_network_gsoc2020`  
+Note: Docker needs to be running in local machine
+3. An URL with token will be printed in terminal, you can access Jupyter Notebooks and RStudio using that link as follows:  
+    *Jupyter Notebooks* : Open the link directly, all Notebooks will be visible  at `/notebooks`
+    *RStudio* : Go to `/rstudio` to open RStudio
+4. Follow sequence of execution as mentioned above
+
 ## How to use papermill
 [Papermill](https://papermill.readthedocs.io/) is used to paramete the notebook **Reactome Failed Query Analysis** , to use this, make a yaml file as following:  
 
