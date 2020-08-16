@@ -13,9 +13,7 @@ For extraction of MeSH terms, an UMLS license/account is required. If you do not
 
 ### Supporting files
 MTI WebAPI is used to get MeSH terms using their [batch processing](https://ii.nlm.nih.gov/Interactive/MTI/mti.shtml). Their code is in Java hence [pyjnius](https://pyjnius.readthedocs.io/en/stable/) to run the JAR files. The files are present in [/lib](./lib).  
-These JAR files can be found in [ziy
-/
-skr-webapi](https://github.com/ziy/skr-webapi/) repository.
+These JAR files can be found in [ziy/skr-webapi](https://github.com/ziy/skr-webapi/) repository.
 
 ## Steps to follow
 Please note: Steps 1 and 2 can be performed parallely as they are independent.  
