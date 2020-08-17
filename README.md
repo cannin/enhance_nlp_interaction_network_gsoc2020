@@ -39,10 +39,15 @@ Note: Docker needs to be running in local machine
 
 ### Parameters of `Reactome_Failed_Query_Analysis.ipynb`
 ```
-mti_email_id: email@address.com
-mti_username: Username
-mti_password: password
-pmid_threshold: 20
+mti_email_id = "example@example.com"
+mti_username = "username"
+mti_password = "password"
+
+pmid_threshold = 20
+indra_db_rest_url = "SET_INDRA_DB_URL"
+
+reactome_failed_terms_link = "https://gist.githubusercontent.com/PritiShaw/03ce10747835390ec8a755fed9ea813d/raw/cc72cb5479f09b574e03ed22c8d4e3147e09aa0c/Reactome.csv"
+final_output_file_path = "failed_query_analysis_output.tsv"
 ```
 
 ### Parameters of `Reactome_PMID_Metadata_Extraction.ipynb`
@@ -52,7 +57,7 @@ mti_username = "username"
 mti_password = "password"
 
 reactome_pmid_url = "https://reactome.org/download/current/ReactionPMIDS.txt"
-pmid_chunk_limit = 0
+pmid_chunk_limit = 0 
 output_path = "reactome_pmid_metadata.tsv"
 ```
 
@@ -61,4 +66,7 @@ output_path = "reactome_pmid_metadata.tsv"
 `pip install papermill`  
 
 **To Run the program**  
-`papermill Reactome_Failed_Query_Analysis.ipynb output.ipynb -f path/to/parameters.yaml`
+
+`papermill Reactome_Failed_Query_Analysis.ipynb failed_query_analysis.ipynb -f path/to/parameters.yaml`  
+
+`papermill Reactome_PMID_Metadata_Extraction.ipynb pmid_metadata_extraction.ipynb -f path/to/parameters.yaml`

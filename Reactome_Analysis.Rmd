@@ -130,7 +130,7 @@ reactomePathwayInfo <- read_tsv(reactome_pathway_info_file, col_names=c("pathway
   organism = col_character()
 ))
 
-reactomePathwayHierarchy <- read_tsv(, col_names=c("parent_id", "child_id"), col_types = cols(
+reactomePathwayHierarchy <- read_tsv(reactome_pathway_hierarchy_file, col_names=c("parent_id", "child_id"), col_types = cols(
   parent_id = col_character(),
   child_id = col_character()
 ))
