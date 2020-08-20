@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Installation
-        run: apt-get install python3-setuptools ; pip3 install . ; pip3 install pytest pylint
+        run: sudo apt-get install python3-setuptools ; pip3 install . ; pip3 install pytest pylint
       - name: Unit Testing
         run: pytest
       - name: Quality Check
