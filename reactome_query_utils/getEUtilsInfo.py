@@ -1,16 +1,14 @@
+"""Extaction of Metadata from EUtils using PMID"""
+
 import os
-import gzip
 import time
-import sys
 import csv
-import requests
-import json
-import indra.literature.pubmed_client as parser
 import xml.etree.ElementTree as ET
-from indra.sources import indra_db_rest
-from indra.assemblers.html.assembler import HtmlAssembler
 from urllib.parse import urljoin
+import indra.literature.pubmed_client as parser
+from indra.sources import indra_db_rest
 from indra.statements.statements import stmts_to_json
+import requests
 
 
 def citationCount(pmid):
@@ -33,7 +31,7 @@ def citationCount(pmid):
             citationCount_url = requests.get(
                 "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi?dbfrom=pubmed&linkname=pubmed_pmc_refs&id="+pmid)
             flag = False
-        except Exception as e:
+        except:
             time.sleep(.5)
     try:
         fileContent = citationCount_url.text
@@ -85,7 +83,7 @@ def getIndraQueryTermStmtCount(txt, source_apis=None):
     return len(stmts)
 
 
-def extractFromXML(pmid,  term, total_pmid):
+def extractFromXML(pmid, term, total_pmid):
     """
     Extracts information from XML
     """
@@ -96,12 +94,12 @@ def extractFromXML(pmid,  term, total_pmid):
             xmlContent = requests.get(
                 "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&retmode=xml&id="+pmid)
             flag = False
-        except Exception as e:
+        except:
             time.sleep(.5)
 
     fileContent = xmlContent.text
     destFileName = "eutils_output.tsv"
-    if(os.path.isfile(destFileName)):
+    if os.path.isfile(destFileName):
         destCSV = open(destFileName, 'a')
     else:
         destCSV = open(destFileName, 'w')
@@ -118,14 +116,6 @@ def extractFromXML(pmid,  term, total_pmid):
             history_pub_date = pubmed.find(
                 './History/PubMedPubDate[@PubStatus="pubmed"]')
             year = parser._find_elem_text(history_pub_date, 'Year')
-            PublicationTypeList = medline_citation.find(
-                './Article/PublicationTypeList')
-            pubType = parser._find_elem_text(
-                PublicationTypeList, 'PublicationType')
-            topics = []
-            for topic in medline_citation.findall('./MeshHeadingList/MeshHeading'):
-                topics.append(topic.find('DescriptorName').text)
-            topics_string = ' , '.join(topics)
         except Exception as err:
             print("Err: EUtils:", err)
             continue
@@ -156,7 +146,7 @@ def extractFromXML(pmid,  term, total_pmid):
         indra_stmt_count = len(stmt)
         # storing in tsv file
         writer.writerow([PMID, term, title, year, PMCID, DOI, pmc_citation_count,
-                         indra_stmt_count, OC_CITATION_COUNT,  getIndraQueryTermStmtCount(
+                         indra_stmt_count, OC_CITATION_COUNT, getIndraQueryTermStmtCount(
                              term),
                          total_pmid])
     # Closing file
@@ -165,12 +155,12 @@ def extractFromXML(pmid,  term, total_pmid):
 
 def getEUtilsInfo(pmid_file_path):
     """
-    Generate a TSV containing meta details of PMID from EUtils  
+    Generate a TSV containing meta details of PMID from EUtils
     Following details are retrieved using EUtils, INDRA and OpenCitations using the PMID JOURNAL_TITLE, YEAR, PMCID, DOI, PMC_CITATION_COUNT, INDRA_STATEMENT_COUNT, OC_CITATION_COUNT, INDRA_QUERY_TERM_STATEMENT_COUNT, PMID_COUNT
 
     Parameters
     ----------
-    pmid_file_path : 
+    pmid_file_path :
         Path to PMID list file
     """
     with open(pmid_file_path) as file:

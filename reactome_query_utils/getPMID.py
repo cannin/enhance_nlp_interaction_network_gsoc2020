@@ -1,7 +1,8 @@
-import requests
+"""Extaction of PMID from search terms"""
+
 import time
-import json
 import xml.etree.ElementTree as ET
+import requests
 
 
 def _extractListID(filecontent, term, pmid_list_path):

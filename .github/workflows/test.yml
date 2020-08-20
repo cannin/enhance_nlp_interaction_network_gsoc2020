@@ -1,0 +1,17 @@
+name: Test
+
+on: 
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest 
+
+    steps:
+      - name: Setup
+        run: pip install .
+      - name: Unit Testing
+        run: pytest
+      - name: Quality Check
+        run: python run_pylint.py --disable=line-too-long,invalid-name,too-many-arguments,too-many-locals,too-few-public-methods,broad-except,too-many-instance-attributes,too-many-function-args --fail-under=9 reactome_query_utils 

@@ -1,12 +1,11 @@
+"""Merges supporting files to generate final output file"""
+
 import csv
-import json
-import sys
-import os
 
 
 def mergeOutputs(final_output_file_path, path_eutils, path_mesh):
     """
-    Merge outputs from EUtils and MESH terms from 
+    Merge outputs from EUtils and MESH terms from
 
     Parameters
     ----------

@@ -1,8 +1,8 @@
+"""Retrive MeSH terms from PMIDs using MTI"""
+
 from xml.etree.ElementTree import parse
 from urllib.request import urlopen
 import time
-import os
-import requests
 
 
 def getAbstracts(abstract_filepath, pmid_path):
@@ -50,10 +50,10 @@ def getMeSH(mti_email_id, mti_username, mti_password, batch_processor, pmid_path
     MTI login details from https://utslogin.nlm.nih.gov/cas/login are required
 
     Parameters:
-        mti_email_id  
-        mti_username  
-        mti_password  
-        batch_processor  
+        mti_email_id
+        mti_username
+        mti_password
+        batch_processor
         pmid_path:
             File Path to list of PMIDs
         abstract_filepath:
