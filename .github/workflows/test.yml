@@ -1,14 +1,17 @@
 name: Test
 
-on: 
+on:
   push:
+    branches: [ package ]
   pull_request:
+    branches: [ package ]
 
 jobs:
   build:
     runs-on: ubuntu-latest 
 
     steps:
+      - uses: actions/checkout@v2
       - name: Setup
         run: pip install .
       - name: Unit Testing
