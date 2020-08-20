@@ -56,7 +56,7 @@ library(listutils) # From: https://github.com/cannin/listutils
 max_dt_table_display <- 100
 
 # PYTHON ----
-python_virtualenv <- "~/.local/share/virtualenvs/indra_test-0O3lqQDV"
+python_virtualenv <- "/srv/venv" # "~/.local/share/virtualenvs/indra_test-0O3lqQDV"
 
 # GENERAL ----
 # Only consider terms with at least this many failed search terms
@@ -549,7 +549,7 @@ NOTES:
 * Running everything together because Python variables are not saved between chunks
 * Python code set to not run or otherwise the code is not in the final RMarkdown HTML (bug with rmarkdown?)
 
-```{python3, message=TRUE, warning=TRUE, eval=FALSE}
+```{python3, message=TRUE, warning=TRUE, eval=TRUE}
 import os 
 from indra.sources import indra_db_rest
 from indra.assemblers.html.assembler import HtmlAssembler
