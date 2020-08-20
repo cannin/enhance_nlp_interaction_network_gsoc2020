@@ -610,7 +610,7 @@ if r is None:
 else: 
   failed_search_term = r.query
   indra_stmt_json_file = r.indra_stmt_json_file
-  indra_stmt_html_file = indra_stmt_html_file
+  indra_stmt_html_file = r.indra_stmt_html_file
 
 # GROUND TERM ----
 resp = requests.post(urljoin(grounding_service_url, 'ground'),
