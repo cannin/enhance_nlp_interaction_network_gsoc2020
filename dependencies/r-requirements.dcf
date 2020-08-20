@@ -10,6 +10,6 @@ depends:
   readr
   reticulate
   tidytext
-  dotenv
+  yaml
   github::cannin/listutils
   
