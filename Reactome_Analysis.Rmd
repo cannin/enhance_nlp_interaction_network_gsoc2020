@@ -75,14 +75,14 @@ min_oc_citation_count <- 0
 # Reactome parameters 
 reactome_organism <- "Homo sapiens"
 
-system("wget -O failed_searches_queries_2019.csv https://gist.githubusercontent.com/PritiShaw/03ce10747835390ec8a755fed9ea813d/raw/cc72cb5479f09b574e03ed22c8d4e3147e09aa0c/Reactome.csv ")
+system("wget -O failed_searches_queries_2019.csv https://gist.githubusercontent.com/PritiShaw/03ce10747835390ec8a755fed9ea813d/raw/cc72cb5479f09b574e03ed22c8d4e3147e09aa0c/Reactome.csv")
 failed_searches_file <- "failed_searches_queries_2019.csv"
 
 # Data directly from https://reactome.org/download/current/
-system("wget -O ReactomePathways.txt https://reactome.org/download/current/ReactomePathways.txt ")
+system("wget -O ReactomePathways.txt https://reactome.org/download/current/ReactomePathways.txt")
 system("wget -O ReactomePathwaysRelation.txt https://reactome.org/download/current/ReactomePathwaysRelation.txt ")
 system("wget -O reactome_reaction_exporter_v73.txt https://reactome.org/download/current/reactome_reaction_exporter_v73.txt ")
-system("wget -O ReactionPMIDS.txt https://reactome.org/download/current/ReactionPMIDS.txt ")
+system("wget -O ReactionPMIDS.txt https://reactome.org/download/current/ReactionPMIDS.txt")
 
 reactome_pathway_info_file <- "ReactomePathways.txt"
 reactome_pathway_hierarchy_file <- "ReactomePathwaysRelation.txt"
@@ -91,10 +91,12 @@ reactome_reaction_pmid_mapping_file <- "ReactionPMIDS.txt"
 
 # MESH METADATA ----
 # From: https://gist.github.com/PritiShaw/9ad43241c99f727afd04efbe0bdb77e8
+system("wget -O reactome_pmid_metadata.tsv https://gist.githubusercontent.com/PritiShaw/9ad43241c99f727afd04efbe0bdb77e8/raw/91d08af279f58ca1bb6793cef1eea21a7b2407cd/all.tsv")
 reactome_pmid_metadata_file <- "reactome_pmid_metadata.tsv" 
 
 # From: https://gist.github.com/PritiShaw/6732c69bfbd4a169f7cdae448351d06e
-failed_searches_metadata_file <- "failed_query_analysis_output.tsv"
+system("wget -O failed_searches_output.tsv https://gist.githubusercontent.com/PritiShaw/6732c69bfbd4a169f7cdae448351d06e/raw/fd4ca754c3254f465d2301dd8093a242ccef55df/output.tsv")
+failed_searches_metadata_file <- "failed_searches_output.tsv"
 
 # USER QUERY ----
 # Failed query to be mapped to Reactome pathways
@@ -122,7 +124,7 @@ DT::datatable(head(failed_searches, max_dt_table_display), rownames=FALSE)
 ## Reactome Hierachy Mapping
 ### Calculate Map Reactome Pathways to Hierachy
 
-```{r, eval=FALSE}
+```{r, eval=TRUE}
 # Read Reactome data 
 reactomePathwayInfo <- read_tsv(reactome_pathway_info_file, col_names=c("pathway_id", "pathway_name", "organism"), col_types = cols(
   pathway_id = col_character(),
