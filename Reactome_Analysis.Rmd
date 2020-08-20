@@ -94,8 +94,8 @@ reactome_reaction_pmid_mapping_file <- "ReactionPMIDS.txt"
 system("wget -O reactome_pmid_metadata.tsv https://gist.githubusercontent.com/PritiShaw/9ad43241c99f727afd04efbe0bdb77e8/raw/91d08af279f58ca1bb6793cef1eea21a7b2407cd/all.tsv")
 reactome_pmid_metadata_file <- "reactome_pmid_metadata.tsv" 
 
-# From: https://gist.github.com/PritiShaw/6732c69bfbd4a169f7cdae448351d06e
-system("wget -O failed_searches_output.tsv https://gist.githubusercontent.com/PritiShaw/6732c69bfbd4a169f7cdae448351d06e/raw/fd4ca754c3254f465d2301dd8093a242ccef55df/output.tsv")
+# From: https://github.com/PritiShaw/Reactome-Failed-Queries-Processing/
+system("wget -O failed_searches_output.tsv https://raw.githubusercontent.com/PritiShaw/Reactome-Failed-Queries-Processing/master/output.tsv")
 failed_searches_metadata_file <- "failed_searches_output.tsv"
 
 # USER QUERY ----
