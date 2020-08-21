@@ -48,32 +48,38 @@ library(reticulate)
 
 # Analyze MESH recurrence of failed search terms  
 library(listutils) # From: https://github.com/cannin/listutils
+
+# Setup Parameters from YAML file
+library(yaml)
 ```
 
 # PARAMETERS 
 ```{r}
+# load parameter config file 
+params <- yaml.load_file("parameters.yml")
+
 # NOTEBOOK ----
-max_dt_table_display <- 100
+max_dt_table_display <- params$max_dt_table_display
 
 # PYTHON ----
-python_virtualenv <- "/srv/venv" # "~/.local/share/virtualenvs/indra_test-0O3lqQDV"
+python_virtualenv <- params$python_virtualenv # "~/.local/share/virtualenvs/indra_test-0O3lqQDV"
 
 # GENERAL ----
 # Only consider terms with at least this many failed search terms
 # NOTE: Only for basic analyses 
-min_failed_search_hits <- 10
+min_failed_search_hits <- params$min_failed_search_hits
 
 # RANK TERMS ----
 # Rank failed searches 
-top_n_reactome_journals <- 10
-min_indra_query_term_count <- 0
-min_indra_statement_count <- 0
-min_pmc_citation_count <- 0
-min_oc_citation_count <- 0
+top_n_reactome_journals <- params$top_n_reactome_journals
+min_indra_query_term_count <- params$min_indra_query_term_count
+min_indra_statement_count <- params$min_indra_statement_count
+min_pmc_citation_count <- params$min_pmc_citation_count
+min_oc_citation_count <- params$min_oc_citation_count
 
 # REACTOME ----
 # Reactome parameters 
-reactome_organism <- "Homo sapiens"
+reactome_organism <- params$reactome_organism
 
 system("wget -O failed_searches_queries_2019.csv https://gist.githubusercontent.com/PritiShaw/03ce10747835390ec8a755fed9ea813d/raw/cc72cb5479f09b574e03ed22c8d4e3147e09aa0c/Reactome.csv")
 failed_searches_file <- "failed_searches_queries_2019.csv"
@@ -100,13 +106,13 @@ failed_searches_metadata_file <- "failed_searches_output.tsv"
 
 # USER QUERY ----
 # Failed query to be mapped to Reactome pathways
-query <- "MATN2"
+query <- params$query
 
 # OUTPUT ---- 
-all_mesh_by_top_level_pathways_file <- "all_mesh_by_top_level_pathways_full.txt"
-top_level_pathways_file <- "top_level_pathways.txt"
-indra_stmt_html_file <- "indra_output.html"
-indra_stmt_json_file <- "indra_output.json"
+all_mesh_by_top_level_pathways_file <- params$all_mesh_by_top_level_pathways_file
+top_level_pathways_file <- params$top_level_pathways_file
+indra_stmt_html_file <- params$indra_stmt_html_file
+indra_stmt_json_file <- params$indra_stmt_json_file
 ```
 
 # LOAD DATA
