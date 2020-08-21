@@ -34,16 +34,15 @@ Note: Docker needs to be running in local machine
     *RStudio* : Go to `/rstudio` to open RStudio
 4. Follow sequence of execution as mentioned above
 
-
 ### Parameters  
 Make a copy of [`parameters_sample.yml`](/parameters_sample.yml) named *parameters.yml* and set the configuration before running the Rmd file.   
 
 ```{yaml}
+# PYTHON NOTEBOOK PARAMETERS ----
 # Register at https://utslogin.nlm.nih.gov/cas/login for MTI credentials
-
 mti:
   email_id : "example@example.com"
-  username : "Username"
+  username : "username"
   password : "password"
 
 pmid_threshold : 20
@@ -57,33 +56,37 @@ failed_query_output_file_path : "failed_query_analysis_output.tsv"
 pmid_chunk_limit : 0
 pmid_metadata_output_path : "reactome_pmid_metadata.tsv"
 
-# Rmd Parameters
+# R NOTEBOOK (Rmd) PARAMETERS ----
 
-# NOTEBOOK
+# Notebook
 max_dt_table_display : 100
-# PYTHON
+
+# Python environment
 python_virtualenv : "/srv/venv"
-# GENERAL
+
+# General
 min_failed_search_hits : 10
-# RANK TERMS
+
+# Rank Terms
 top_n_reactome_journals : 10
 min_indra_query_term_count : 0
 min_indra_statement_count : 0
 min_pmc_citation_count : 0
 min_oc_citation_count : 0
 
-# REACTOME parameters
+# Reactome Parameters
 reactome_organism: "Homo sapiens"
-# USER QUERY
+
+# User Query
 query: "MATN2"
 
-# OUTPUT
+# Output
 all_mesh_by_top_level_pathways_file : "all_mesh_by_top_level_pathways_full.txt"
 top_level_pathways_file : "top_level_pathways.txt"
 indra_stmt_html_file : "indra_output.html"
 indra_stmt_json_file : "indra_output.json"
-```
 
+```
 ## How to use papermill
 [Papermill](https://papermill.readthedocs.io/) is used to paramete the notebook **Reactome Failed Query Analysis** , to use this, make a yaml file as following:  
 
@@ -91,5 +94,7 @@ indra_stmt_json_file : "indra_output.json"
 `pip install papermill`  
 
 **To Run the Notebook**  
-
 `papermill Notebook.ipynb failed_query_analysis.ipynb -f path/to/parameters.yaml`  
+
+## To run all notebooks and R Code
+`bash startup.sh path/to/parameters.yml`

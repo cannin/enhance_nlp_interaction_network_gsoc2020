@@ -1,5 +1,5 @@
 # PYTHON NOTEBOOK PARAMETERS ----
-# Register at https://utslogin.nlm.nih.gov/cas/login
+# Register at https://utslogin.nlm.nih.gov/cas/login for MTI credentials
 mti:
   email_id : "example@example.com"
   username : "username"
