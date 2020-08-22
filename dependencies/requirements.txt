@@ -1,8 +1,8 @@
 git+git://github.com/sorgerlab/indra
 git+git://github.com/cannin/enhance_nlp_interaction_network_gsoc2020@package
 ipywidgets==7.5.1
+jsonpath-ng==1.5.1
 papermill==2.1.2
 pyjnius==1.3.0
 requests==2.24.0
 tqdm==4.48.2
-jsonpath-ng==1.5.1
