@@ -81,28 +81,33 @@ min_oc_citation_count <- params$min_oc_citation_count
 # Reactome parameters 
 reactome_organism <- params$reactome_organism
 
-system("wget -O failed_searches_queries_2019.csv https://gist.githubusercontent.com/PritiShaw/03ce10747835390ec8a755fed9ea813d/raw/cc72cb5479f09b574e03ed22c8d4e3147e09aa0c/Reactome.csv")
 failed_searches_file <- "failed_searches_queries_2019.csv"
+download.file("https://gist.githubusercontent.com/PritiShaw/03ce10747835390ec8a755fed9ea813d/raw/cc72cb5479f09b574e03ed22c8d4e3147e09aa0c/Reactome.csv",failed_searches_file)
 
 # Data directly from https://reactome.org/download/current/
-system("wget -O ReactomePathways.txt https://reactome.org/download/current/ReactomePathways.txt")
-system("wget -O ReactomePathwaysRelation.txt https://reactome.org/download/current/ReactomePathwaysRelation.txt ")
-system("wget -O reactome_reaction_exporter_v73.txt https://reactome.org/download/current/reactome_reaction_exporter_v73.txt ")
-system("wget -O ReactionPMIDS.txt https://reactome.org/download/current/ReactionPMIDS.txt")
-
 reactome_pathway_info_file <- "ReactomePathways.txt"
+download.file("https://reactome.org/download/current/ReactomePathways.txt", reactome_pathway_info_file)
 reactome_pathway_hierarchy_file <- "ReactomePathwaysRelation.txt"
+download.file("https://reactome.org/download/current/ReactomePathwaysRelation.txt",reactome_pathway_hierarchy_file)
 reactome_pathway_reaction_mapping_file <- "reactome_reaction_exporter_v73.txt"
+download.file("https://reactome.org/download/current/reactome_reaction_exporter_v73.txt",reactome_pathway_reaction_mapping_file)
 reactome_reaction_pmid_mapping_file <- "ReactionPMIDS.txt"
+download.file("https://reactome.org/download/current/ReactionPMIDS.txt",reactome_reaction_pmid_mapping_file)
+
 
 # MESH METADATA ----
 # From: https://gist.github.com/PritiShaw/9ad43241c99f727afd04efbe0bdb77e8
-system("wget -O reactome_pmid_metadata.tsv https://gist.githubusercontent.com/PritiShaw/9ad43241c99f727afd04efbe0bdb77e8/raw/91d08af279f58ca1bb6793cef1eea21a7b2407cd/all.tsv")
 reactome_pmid_metadata_file <- "reactome_pmid_metadata.tsv" 
+if(!file.exists(reactome_pmid_metadata_file)){
+  download.file("https://gist.githubusercontent.com/PritiShaw/9ad43241c99f727afd04efbe0bdb77e8/raw/91d08af279f58ca1bb6793cef1eea21a7b2407cd/all.tsv",reactome_pmid_metadata_file)
+}
 
+# Failed Query Term Data
 # From: https://github.com/PritiShaw/Reactome-Failed-Queries-Processing/
-system("wget -O failed_searches_output.tsv https://raw.githubusercontent.com/PritiShaw/Reactome-Failed-Queries-Processing/master/output.tsv")
 failed_searches_metadata_file <- "failed_searches_output.tsv"
+if(!file.exists(failed_searches_metadata_file)){
+  download.file("https://raw.githubusercontent.com/PritiShaw/Reactome-Failed-Queries-Processing/master/output.tsv",failed_searches_metadata_file)
+}
 
 # USER QUERY ----
 # Failed query to be mapped to Reactome pathways
