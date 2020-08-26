@@ -1,12 +1,14 @@
 name: CodeQuality
 
-on:  
-  push:
-    branches: [ package ]
-  pull_request:
-    branches: [ package ]
+on:    
   schedule:
     - cron: '*/5 * * * *'
+  push:
+    branches: 
+      - package
+  pull_request:
+    branches:
+      - package
 
 jobs:
   tester:
