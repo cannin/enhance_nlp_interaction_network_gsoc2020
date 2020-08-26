@@ -1,4 +1,4 @@
-MTI Consistency Check
+MTI WEB API Consistency Check
 ---
 
 ### Supporting libraries
