@@ -1,0 +1,18 @@
+name: INDRAConsistencyChecker
+
+on:    
+  schedule:
+    - cron: '0 0 * * THU'
+
+jobs:
+  tester:
+    runs-on: ubuntu-latest 
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: package
+      - name: Installation
+        run: sudo apt-get install python3-setuptools ; pip3 install . ; pip3 install pytest pylint
+      - name: Check INDRA Method outputs
+        run: python3 -m pytest
