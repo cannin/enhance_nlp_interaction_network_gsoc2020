@@ -5,18 +5,18 @@ mti:
   username : "username"
   password : "password"
 
-pmid_threshold : 20
+pmid_threshold : 2
 indra_db_rest_url : "SET_INDRA_DB_URL"
 
 reactome_failed_terms_link : "https://gist.githubusercontent.com/PritiShaw/03ce10747835390ec8a755fed9ea813d/raw/cc72cb5479f09b574e03ed22c8d4e3147e09aa0c/Reactome.csv"
-failed_query_threshold : null # null Indicates all terms will be processed
+failed_query_threshold : 5 
 failed_query_hits_threshold : 10
 
 reactome_pmid_url : "https://reactome.org/download/current/ReactionPMIDS.txt"
 
 failed_query_output_file_path : "failed_query_analysis_output.tsv"
 
-pmid_chunk_limit : 0
+pmid_chunk_limit : 1
 pmid_metadata_output_path : "reactome_pmid_metadata.tsv"
 
 # R NOTEBOOK (Rmd) PARAMETERS ----

@@ -107,7 +107,7 @@ Note: Docker needs to be running in local machine
 4. Follow sequence of execution as mentioned above
 
 ### Parameters  
-Sample file can be found here [`parameters_sample.yml`](/parameters_sample.yml). Following configurations can be made using the file.    
+Sample file can be found here [`parameters_sample.yml`](/parameters_sample.yml). Following configurations can be made using the file. For testing the Python notebooks, you can use the template [`parameters_test.yml`](/parameters_test.yml), it has configuration for processing a small subset of the query terms.
 
 ```{yaml}
 # PYTHON NOTEBOOK PARAMETERS ----
@@ -121,6 +121,9 @@ pmid_threshold : 20
 indra_db_rest_url : "SET_INDRA_DB_URL"
 
 reactome_failed_terms_link : "https://gist.githubusercontent.com/PritiShaw/03ce10747835390ec8a755fed9ea813d/raw/cc72cb5479f09b574e03ed22c8d4e3147e09aa0c/Reactome.csv"
+failed_query_threshold : null # null Indicates all terms will be processed
+failed_query_hits_threshold : 10
+
 reactome_pmid_url : "https://reactome.org/download/current/ReactionPMIDS.txt"
 
 failed_query_output_file_path : "failed_query_analysis_output.tsv"
