@@ -21,7 +21,7 @@ jobs:
       - name: Installation
         run: pip install . ; pip install pytest pylint pytest-cov ; mkdir -p ./coverage/reports/
       - name: Unit Testing
-        run: pytest --cov=reactome_query_utils --cov-report=xml
+        run: export PYTHONPATH="." ; pytest --cov=reactome_query_utils --cov-report=xml
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:
