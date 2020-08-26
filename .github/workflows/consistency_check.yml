@@ -1,0 +1,28 @@
+name: ConsistencyChecker
+
+on:
+  schedule:
+    - cron: '0 1 * * 4' # Runs at 01:00 UTC , every Thursday
+
+jobs:
+  MTI_BatchChecker:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Setup Java JDK
+        uses: actions/setup-java@v1.4.2
+        with:
+          java-version: 1.8
+      
+      - name: RUN MTI Batch processor
+        env:
+          MTI_USERNAME: ${{ secrets.MTI_USERNAME }}
+          MTI_PASSWORD: ${{ secrets.MTI_PASSWORD }}
+        working-directory: ./MTI
+        run: bash ./mti_webapi/run.sh GenericBatchUser --email consitency-check-bot@github.com ./inputs/sample_abstract.txt >> ./results/batch_output.txt
+        
+      - name: Check file difference
+        working-directory: ./MTI/results
+        run: diff batch_expected_output.txt batch_output.txt
