@@ -1,0 +1,50 @@
+# PYTHON NOTEBOOK PARAMETERS ----
+# Register at https://utslogin.nlm.nih.gov/cas/login for MTI credentials
+mti:
+  email_id : "example@example.com"
+  username : "username"
+  password : "password"
+
+pmid_threshold : 2
+indra_db_rest_url : "SET_INDRA_DB_URL"
+
+reactome_failed_terms_link : "https://gist.githubusercontent.com/PritiShaw/03ce10747835390ec8a755fed9ea813d/raw/cc72cb5479f09b574e03ed22c8d4e3147e09aa0c/Reactome.csv"
+failed_query_threshold : 5 
+failed_query_hits_threshold : 10
+
+reactome_pmid_url : "https://reactome.org/download/current/ReactionPMIDS.txt"
+
+failed_query_output_file_path : "failed_query_analysis_output.tsv"
+
+pmid_chunk_limit : 1
+pmid_metadata_output_path : "reactome_pmid_metadata.tsv"
+
+# R NOTEBOOK (Rmd) PARAMETERS ----
+
+# Notebook
+max_dt_table_display : 100
+
+# Python environment
+python_virtualenv : "/srv/venv"
+
+# General
+min_failed_search_hits : 10
+
+# Rank Terms
+top_n_reactome_journals : 10
+min_indra_query_term_count : 0
+min_indra_statement_count : 0
+min_pmc_citation_count : 0
+min_oc_citation_count : 0
+
+# Reactome Parameters
+reactome_organism: "Homo sapiens"
+
+# User Query
+query: "MATN2"
+
+# Output
+all_mesh_by_top_level_pathways_file : "all_mesh_by_top_level_pathways_full.txt"
+top_level_pathways_file : "top_level_pathways.txt"
+indra_stmt_html_file : "indra_output.html"
+indra_stmt_json_file : "indra_output.json"
