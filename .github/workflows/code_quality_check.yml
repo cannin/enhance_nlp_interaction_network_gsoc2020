@@ -1,6 +1,8 @@
 name: CodeQuality
 
 on:
+  schedule:
+    - cron: '0 0 * * 4'
   push:
     branches: [ package ]
   pull_request:
