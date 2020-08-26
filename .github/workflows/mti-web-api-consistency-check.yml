@@ -1,0 +1,40 @@
+name: MTI_WEBApiConsistencyChecker
+
+on:
+  pull_request:
+    branches: ["gh-actions/mesh-consistency-checker"]
+  push:
+    branches: ["gh-actions/mesh-consistency-checker"]
+  schedule:
+    - cron: '30 0 * * THU'
+  
+
+jobs:
+  MTI_BatchChecker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: "gh-actions/mesh-consistency-checker"
+      
+      - name: Setup Java JDK
+        uses: actions/setup-java@v1.4.2
+        with:
+          java-version: 1.8
+      
+      - name: RUN MTI Batch processor
+        env:
+          MTI_USERNAME: ${{ secrets.MTI_USERNAME }}
+          MTI_PASSWORD: ${{ secrets.MTI_PASSWORD }}
+        working-directory: ./MTI
+        run: bash ./mti_webapi/run.sh GenericBatchUser --email consitency-check-bot@github.com ./inputs/sample_abstract.txt >> ./results/batch_output.txt
+        
+      - name: Upload MeSH output artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: mesh-output.txt
+          path: ./MTI/results/batch_output.txt
+      
+      - name: Check file difference
+        working-directory: ./MTI/results
+        run: diff batch_expected_output.txt batch_output.txt
