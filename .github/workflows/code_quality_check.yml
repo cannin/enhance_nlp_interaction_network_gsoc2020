@@ -16,6 +16,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: 'package'
       - name: Installation
         run: sudo apt-get install python3-setuptools ; pip3 install . ; pip3 install pytest pylint
       - name: Unit Testing
