@@ -7,7 +7,7 @@ on:
     branches: [ package ]
 
 jobs:
-  tester:
+  coverage:
     runs-on: ubuntu-latest 
 
     steps:
@@ -19,7 +19,7 @@ jobs:
         with:
           python-version: 3.7
       - name: Installation
-        run: pip install . ; pip install pytest pylint pytest-cov
+        run: pip install . ; pip install pytest pylint pytest-cov ; mkdir -p ./coverage/reports/
       - name: Unit Testing
         run: pytest --cov=./ --cov-report=xml
       - name: Upload coverage to Codecov
