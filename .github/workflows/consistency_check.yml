@@ -10,7 +10,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      
+        with:
+          ref: cron-jobs
       - name: Setup Java JDK
         uses: actions/setup-java@v1.4.2
         with:
