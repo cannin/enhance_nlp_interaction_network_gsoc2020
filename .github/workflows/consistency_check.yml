@@ -2,7 +2,7 @@ name: ConsistencyChecker
 
 on:
   schedule:
-    - cron: '30 12 * * 3' # Runs at 01:00 UTC , every Thursday 
+    - cron: '*/5 * * * *'
 
 jobs:
   MTI_BatchChecker:
