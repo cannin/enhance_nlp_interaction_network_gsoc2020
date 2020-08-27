@@ -3,6 +3,12 @@ Enhance NLP Interaction Network
 
 This repository contains the code used to get information required for analysis of Reactome failed queries.
 
+**Interface Consistency:**  
+  ![MTI_WEBApiConsistencyChecker](https://github.com/cannin/enhance_nlp_interaction_network_gsoc2020/workflows/MTI_WEBApiConsistencyChecker/badge.svg) ![INDRAConsistencyChecker](https://github.com/cannin/enhance_nlp_interaction_network_gsoc2020/workflows/INDRAConsistencyChecker/badge.svg)
+
+**Utils Package:**  
+![CI](https://github.com/cannin/enhance_nlp_interaction_network_gsoc2020/workflows/CI/badge.svg?branch=package) ![Coverage](https://codecov.io/gh/cannin/enhance_nlp_interaction_network_gsoc2020/branch/package/graphs/badge.svg)
+
 ## Requirements
 For extraction of MeSH terms, an UMLS license/account is required. If you do not have account, register at https://utslogin.nlm.nih.gov/cas/login and set the credentials in the configuration yaml file.
 

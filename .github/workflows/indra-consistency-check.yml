@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           ref: package
-      - name: Installation
+      - name: Setup
         run: sudo apt-get install python3-setuptools ; pip3 install . ; pip3 install pytest pylint
       - name: Check INDRA Method outputs
         run: python3 -m pytest
