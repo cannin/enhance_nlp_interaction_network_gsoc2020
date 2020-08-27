@@ -111,4 +111,3 @@ AB  - We consider counting process methods for analysing time-to-event data
       example involves both multiple events and discontinuous intervals at
       risk, and the three approaches give dissimilar answers. We recommend
       the AG and marginal models for the analysis of this type of data.
-
