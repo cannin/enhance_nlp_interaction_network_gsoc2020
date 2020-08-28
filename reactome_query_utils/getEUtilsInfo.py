@@ -9,6 +9,8 @@ import indra.literature.pubmed_client as parser
 from indra.sources import indra_db_rest
 from indra.statements.statements import stmts_to_json
 import requests
+import logging
+logger = logging.getLogger('getEUtilsInfo')
 
 
 def citationCount(pmid):
@@ -172,4 +174,4 @@ def getEUtilsInfo(pmid_file_path):
                 total_pmid = line[2]
                 extractFromXML(pmid, term, total_pmid)
             except Exception as e:
-                print("Err: EUtils: ", e, line)
+                logger.error("%s: %s", e, line)

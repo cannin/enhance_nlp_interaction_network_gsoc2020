@@ -3,6 +3,8 @@
 from xml.etree.ElementTree import parse
 from urllib.request import urlopen
 import time
+import logging
+logger = logging.getLogger('getMeSH')
 
 
 def getAbstracts(abstract_filepath, pmid_path):
@@ -39,9 +41,9 @@ def getAbstracts(abstract_filepath, pmid_path):
                             abstract_file.write(
                                 f"UI  - {pmid}\nTI  - {article_title}\nAB  - {abstract_text}\n\n".encode("ascii", "ignore"))
                         else:
-                            print("Err: MESH: ", "Undefined Abstract")
+                            logger.warning("Undefined Abstract")
                     except Exception as e:
-                        print("Err: MESH: ", e)
+                        logger.error(e)
 
 
 def getMeSH(mti_email_id, mti_username, mti_password, batch_processor, pmid_path="pmid_list.txt", abstract_filepath='abstract.txt', mesh_output_file="mesh.txt"):
@@ -67,11 +69,12 @@ def getMeSH(mti_email_id, mti_username, mti_password, batch_processor, pmid_path
         String:
             Result from MTI after processing the abstracts
     """
+    logger.info("Get Journal Abstracts")
     getAbstracts(abstract_filepath, pmid_path)
-
+    logger.info("Get MeSH from MTI")
     result = batch_processor.processor(
         ["--email", mti_email_id, abstract_filepath], mti_username, mti_password)
-
+    logger.info("Save MeSH terms to file")
     with open(mesh_output_file, "w") as op_file:
         op_file.write(result)
 

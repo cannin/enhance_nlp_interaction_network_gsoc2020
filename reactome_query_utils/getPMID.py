@@ -3,6 +3,8 @@
 import time
 import xml.etree.ElementTree as ET
 import requests
+import logging
+logger = logging.getLogger('getMeSH')
 
 
 def _extractListID(filecontent, term, pmid_list_path):
@@ -33,5 +35,5 @@ def getPMID(terms, pmid_threshold=20, pmid_list_path="pmid_list.txt"):
                 _extractListID(xml_content.text, term, pmid_list_path)
                 flag = False
             except Exception as err:
-                print("Err: getPMID: ", err)
+                logger.warning("%s: %s", term, err)
                 time.sleep(.5)
