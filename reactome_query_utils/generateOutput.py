@@ -1,7 +1,7 @@
 """Merges supporting files to generate final output file"""
 
 import csv
-
+import logging as logger
 
 def mergeOutputs(final_output_file_path, path_eutils, path_mesh):
     """
@@ -42,8 +42,11 @@ def mergeOutputs(final_output_file_path, path_eutils, path_mesh):
             inp = line.split("|")
             mesh_term = inp[1]
             pmid = inp[0]
-            for term in details[pmid]:
-                details[pmid][term]["mesh"].append(mesh_term)
+            if pmid in details:
+                for term in details[pmid]:
+                    details[pmid][term]["mesh"].append(mesh_term)
+            else:
+                logger.warning(f"{pmid} not found in MeSH output")
 
     with open(final_output_file_path, 'w') as csvfile:
         writer = csv.writer(csvfile, quoting=csv.QUOTE_MINIMAL, delimiter='\t')

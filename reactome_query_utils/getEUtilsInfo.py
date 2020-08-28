@@ -9,8 +9,7 @@ import indra.literature.pubmed_client as parser
 from indra.sources import indra_db_rest
 from indra.statements.statements import stmts_to_json
 import requests
-import logging
-logger = logging.getLogger('getEUtilsInfo')
+import logging as logger
 
 
 def citationCount(pmid):
@@ -119,7 +118,7 @@ def extractFromXML(pmid, term, total_pmid):
                 './History/PubMedPubDate[@PubStatus="pubmed"]')
             year = parser._find_elem_text(history_pub_date, 'Year')
         except Exception as err:
-            print("Err: EUtils:", err)
+            logger.warning("%s : %s", pmid, err)
             continue
 
         pub_year = None if (year is None) else int(year)

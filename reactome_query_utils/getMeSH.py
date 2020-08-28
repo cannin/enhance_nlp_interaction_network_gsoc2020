@@ -3,8 +3,7 @@
 from xml.etree.ElementTree import parse
 from urllib.request import urlopen
 import time
-import logging
-logger = logging.getLogger('getMeSH')
+import logging as logger
 
 
 def getAbstracts(abstract_filepath, pmid_path):

@@ -3,8 +3,7 @@
 import time
 import xml.etree.ElementTree as ET
 import requests
-import logging
-logger = logging.getLogger('getMeSH')
+import logging as logger
 
 
 def _extractListID(filecontent, term, pmid_list_path):
