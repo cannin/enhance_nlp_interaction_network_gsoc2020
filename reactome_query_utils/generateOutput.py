@@ -40,13 +40,16 @@ def mergeOutputs(final_output_file_path, path_eutils, path_mesh):
     with open(path_mesh) as mesh:
         for line in mesh:
             inp = line.split("|")
-            mesh_term = inp[1]
-            pmid = inp[0]
-            if pmid in details:
-                for term in details[pmid]:
-                    details[pmid][term]["mesh"].append(mesh_term)
+            if len(inp)>1:
+                mesh_term = inp[1]
+                pmid = inp[0]
+                if pmid in details:
+                    for term in details[pmid]:
+                        details[pmid][term]["mesh"].append(mesh_term)
+                else:
+                    logger.warning("%s not found in MeSH output", pmid)
             else:
-                logger.warning(f"{pmid} not found in MeSH output")
+                logger.warning("Missing MeSH terms: %s", line)
 
     with open(final_output_file_path, 'w') as csvfile:
         writer = csv.writer(csvfile, quoting=csv.QUOTE_MINIMAL, delimiter='\t')
