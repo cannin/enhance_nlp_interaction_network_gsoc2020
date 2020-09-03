@@ -15,4 +15,7 @@ jobs:
       - name: Setup
         run: sudo apt-get install python3-setuptools ; pip3 install . ; pip3 install pytest pylint
       - name: Check INDRA Method outputs
+        env:
+          MTI_USERNAME: ${{ secrets.MTI_USERNAME }}
+          MTI_PASSWORD: ${{ secrets.MTI_PASSWORD }}
         run: python3 -m pytest
