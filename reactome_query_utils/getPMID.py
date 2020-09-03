@@ -2,8 +2,8 @@
 
 import time
 import xml.etree.ElementTree as ET
-import requests
 import logging as logger
+import requests
 
 
 def _extractListID(filecontent, term, pmid_list_path):

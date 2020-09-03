@@ -5,11 +5,11 @@ import time
 import csv
 import xml.etree.ElementTree as ET
 from urllib.parse import urljoin
+import logging as logger
 import indra.literature.pubmed_client as parser
 from indra.sources import indra_db_rest
 from indra.statements.statements import stmts_to_json
 import requests
-import logging as logger
 
 
 def citationCount(pmid):

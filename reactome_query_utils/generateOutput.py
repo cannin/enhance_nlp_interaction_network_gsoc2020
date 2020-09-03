@@ -40,7 +40,7 @@ def mergeOutputs(final_output_file_path, path_eutils, path_mesh):
     with open(path_mesh) as mesh:
         for line in mesh:
             inp = line.split("|")
-            if len(inp)>1:
+            if len(inp) > 1:
                 mesh_term = inp[1]
                 pmid = inp[0]
                 if pmid in details:

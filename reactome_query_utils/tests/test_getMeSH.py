@@ -13,8 +13,8 @@ def test_getMeSH():
     pmid_path = "pmid_list.txt"
     abstract_path = "abstract.txt"
     mesh_output_file = "mesh.txt"
-    username = "PritiShaw"
-    password = "Gsoc2020"
+    username = os.environ["MTI_USERNAME"]
+    password = os.environ["MTI_PASSWORD"]
     processor = GenericBatchNew()
     result = getMeSH("ci@github.com", username, password, processor,
                      abstract_filepath=abstract_path,
