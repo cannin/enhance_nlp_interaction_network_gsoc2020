@@ -16,4 +16,3 @@ To get MTI Credentials register at https://utslogin.nlm.nih.gov/cas/login
 ### Workflow Result
 **Success** indicates that there are no changes in MTI, hence no action is required.  
 **Failure** indicates that either the credentials have failed or MTI batch processing has failed.
-
