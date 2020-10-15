@@ -35,4 +35,4 @@ jobs:
       
       - name: Check file difference
         working-directory: ./results
-        run: diff batch_expected_output.txt batch_output.txt
+        run: diff <(grep -vc ^$ batch_expected_output.txt) <(grep -vc ^$ batch_output.txt)
