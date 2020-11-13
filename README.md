@@ -101,6 +101,17 @@ Output Files:
   * **analysis_output.nb.html**   
     Contains the analysis performed using Rmd file.   
 
+## Hot to run locally using Docker Image [pritishaw/reactome-failed-query-analysis](https://hub.docker.com/repository/docker/pritishaw/reactome-failed-query-analysis)
+
+1. **Pull Docker Image**  
+`docker run --name reactome-failed-query-analysis pritishaw/reactome-failed-query-analysis:latest`
+2. **Start Notebooks**  
+`docker pull pritishaw/reactome-failed-query-analysis:latest`
+3. Follow sequence of execution as mentioned above  
+
+Click to see terminal video   
+[![asciicast](https://asciinema.org/a/FiICV2fKptvsMiMlc1P81PPWf.svg)](https://asciinema.org/a/FiICV2fKptvsMiMlc1P81PPWf)
+
 ## How to run locally using [jupyter/repo2docker](https://github.com/jupyterhub/repo2docker) (Docker)
 
 1. **Installation**  
