@@ -84,7 +84,7 @@ def getIndraQueryTermStmtCount(txt, source_apis=None):
     return len(stmts)
 
 
-def extractFromXML(pmid, term, total_pmid):
+def extractFromXML(pmid, term, total_pmid, destFileName):
     """
     Extracts information from XML
     """
@@ -99,7 +99,7 @@ def extractFromXML(pmid, term, total_pmid):
             time.sleep(.5)
 
     fileContent = xmlContent.text
-    destFileName = "eutils_output.tsv"
+
     if os.path.isfile(destFileName):
         destCSV = open(destFileName, 'a')
     else:
@@ -154,7 +154,7 @@ def extractFromXML(pmid, term, total_pmid):
     destCSV.close()
 
 
-def getEUtilsInfo(pmid_file_path):
+def getEUtilsInfo(pmid_file_path, dest_file_name = "eutils_output.tsv"):
     """
     Generate a TSV containing meta details of PMID from EUtils
     Following details are retrieved using EUtils, INDRA and OpenCitations using the PMID JOURNAL_TITLE, YEAR, PMCID, DOI, PMC_CITATION_COUNT, INDRA_STATEMENT_COUNT, OC_CITATION_COUNT, INDRA_QUERY_TERM_STATEMENT_COUNT, PMID_COUNT
@@ -171,6 +171,6 @@ def getEUtilsInfo(pmid_file_path):
                 pmid = line[0]
                 term = line[1]
                 total_pmid = line[2]
-                extractFromXML(pmid, term, total_pmid)
+                extractFromXML(pmid, term, total_pmid, dest_file_name)
             except Exception as e:
                 logger.error("%s: %s", e, line)
