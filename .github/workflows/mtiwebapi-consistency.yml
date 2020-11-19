@@ -25,6 +25,7 @@ jobs:
         env:
           MTI_USERNAME: ${{ secrets.MTI_USERNAME }}
           MTI_PASSWORD: ${{ secrets.MTI_PASSWORD }}
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: true
         run: bash ./mti_webapi/run.sh GenericBatchUser --email consitency-check-bot@github.com ./inputs/sample_abstract.txt >> ./results/batch_output.txt
         
       - name: Upload MeSH output artifact
