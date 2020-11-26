@@ -157,9 +157,8 @@ public class GenericBatchUser
       i++;
     }
     // Instantiate the object for Generic Batch
-    String username = System.getenv("MTI_USERNAME");
-    String password = System.getenv("MTI_PASSWORD");
-    GenericObject myGenericObj = new GenericObject(username,password); // Set username password here
+    String api_key = System.getenv("MTI_APIKEY");
+    GenericObject myGenericObj = new GenericObject(api_key);
     fatalMessageIfEmptyString(emailAddress, "email address is required.");
     myGenericObj.setField("Email_Address", emailAddress);
     fatalMessageIfEmptyString(batchCommand, "command for batch processing is required.");
