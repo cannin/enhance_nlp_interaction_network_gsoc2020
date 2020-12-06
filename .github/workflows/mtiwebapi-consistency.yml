@@ -21,7 +21,7 @@ jobs:
           ACTIONS_ALLOW_UNSECURE_COMMANDS: true
         uses: actions/setup-java@v1.4.2
         with:
-          java-version: 1.8
+          java-version: 1.11
       
       - name: RUN MTI Batch processor
         env:
