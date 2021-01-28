@@ -1,55 +1,56 @@
-97479605|Humans|D006801|48421009|CT|Forced Humans: childhood;Forced Humans: subjects;Forced Lookup:childhood|TI;AB|MM;RC|79^9^0;348^9^0;864^9^0;944^9^0;1116^9^0
-97479605|Child|D002648|48421009|CT|Forced Lookup:childhood; Forced Age Group: childhood; Forced Age Group: ages 4 to 12 years|TI;AB|MM|79^9^0;348^9^0;864^9^0;944^9^0;1116^9^0;79^9^0;570^18^0
-97479605|Infant, Newborn|D007231|48421009|CT|CT Text Lookup: newborn;CT Text Lookup: newborn infant;CT Text Lookup: newborn infants|AB|MM;RC|144^7^0;28^8^0;452^8^0;828^8^0;1099^8^0
-97479605|Infant|D007223|48421009|CT|CT Text Lookup: infant|AB|MM;RC|152^7^0
+97479605|Humans|D006801|709279|CT|Forced Humans: childhood;Forced Humans: subjects;Forced Humans: infants;Forced Lookup:childhood|TI;AB|MM|79^9^0;348^9^0;864^9^0;944^9^0;1116^9^0
+97479605|Child|D002648|709279|CT|Forced Lookup:childhood; Forced Age Group: childhood; Forced Age Group: ages 4 to 12 years|TI;AB|MM|79^9^0;348^9^0;864^9^0;944^9^0;1116^9^0;79^9^0;570^18^0
+97479605|Adult|D000328|709279|CT|CT Text Lookup: adult|AB|MM|222^6^0
+97479605|Infant|D007223|709279|CT|CT Text Lookup: infant|AB|MM|152^7^0
+97479605|Infant, Newborn|D007231|709279|CT|CT Text Lookup: newborn;CT Text Lookup: newborn infant;CT Text Lookup: newborn infants|AB|MM|144^7^0;28^8^0;452^8^0;828^8^0;1099^8^0
 97479605|Child, Preschool|D002675|1000|CT|Forced Age Group: ages 4 to 12 years||MM|570^18^0
-97479605|*Cerebral Blood Flow|D002560|24270|ET|Entry Term Replacement for "Cerebrovascular Circulation";RtM via: Cerebral Blood Flow;RtM via: Cerebrovascular Circulation;Forced Non-Leaf Node Lookup:cerebral blood flows|TI;AB|MM;RC|1249^3^0;1204^3^0;1108^3^0;837^3^0;422^3^0;283^3^0;115^19^0;37^19^0
-97479605|Brain|D001921|3900|MH|RtM via: Brain|AB|MM;RC|203^5^0
-97479605|Hypoxia-Ischemia, Brain|D020925|534|MH|RtM via: Hypoxic-Ischemic Encephalopathy|AB|MM;RC|512^31^0
-97479605|Nervous System Physiological Phenomena|D009424|458|MH|RtM via: Nervous System Physiological Phenomena|AB|MM;RC|301^19^0
-97479605|Autoregulation|D006706|455|ET|Entry Term Replacement for "Homeostasis";RtM via: Homeostasis|AB|MM;RC|1356^14^0
-97479605|Neurologic Examination|D009460|450|MH|RtM via: Neurologic Examination|AB|MM;RC|767^31^0;672^30^0
-98018928|Cricetinae|D006224|28072|CT|CT Text Lookup: hamster|TI|MM;RC|103^7^0
-98018928|Animals|D000818|28072|CT|CT Text Lookup: hamster|TI|MM;RC|103^7^0
-98018928|*Bupivacaine|D002045|27072|MH|RtM via: Bupivacaine;checkForceMH Boosted;Forced Non-Leaf Node Lookup:bupivacaine|TI;AB|MM;RC|1306^11^0;1071^11^0;660^11^0;638^11^0;366^11^0;151^11^0;21^11^0;1154^11^0
-98018928|*Myocytes, Cardiac|D032383|14376|MH|RtM via: Myocytes, Cardiac;Forced Leaf Node Lookup:cardiomyocytes|TI;AB|MM;RC|408^14^0;85^14^0
-98018928|*Heart Ventricles|D006352|12699|MH|RtM via: Heart Ventricle|TI;AB|MM;RC|465^10^0;73^11^0
-98018928|Anesthetics, Local|D000779|3544|MH|RtM via: Local Anesthetics|AB|MM;RC|134^16^0
-98018928|Calcium Channels, L-Type|D020746|2722|MH|||RC
-98018928|*Calcium, Dietary|D002136|2556|MH|RtM via: Calcium, Dietary|TI|MM|54^7^0
-98018928|Patch-Clamp Techniques|D018408|1288|MH|RtM via: Patch-Clamp Techniques|AB|MM;RC|560^18^0
-98018928|Calcium Channel Blockers|D002121|1125|MH|||RC
-98018928|*Minerals|D008903|603|MH|RtM via: CALCIUM SUPPLEMENTS|TI|MM|54^7^0
-97443327|*Hydrogen|D006859|29551|MH|RtM via: Hydrogen;checkForceMH Boosted;Forced Non-Leaf Node Lookup:hydrogen|TI|MM;RC|46^8^0
-97443327|*Carbon|D002244|10075|MH|RtM via: Carbon;checkForceMH Boosted;Forced Non-Leaf Node Lookup:carbon|TI;AB|MM;RC|1418^6^0;93^6^0
-97443327|*Ruminococcus|D045857|7060|MH|RtM via: Ruminococcus flavefaciens;checkForceMH Boosted|TI;AB|MM|319^25^0;103^25^0
-97443327|FD 1|C016882|4529|NM|Forced SCR Leaf Node Lookup:fd-1|TI;AB|MM|129^4^0;345^4^0
-97443327|Ruminococcus flavefaciens|C000637997|4529|NM|RtM via: Ruminococcus flavefaciens;Forced New Lookup:ruminococcus flavefaciens|TI;AB|MM|319^25^0;103^25^0
-97443327|formic acid|C030544|42190|NM|RtM via: formate|TI;AB|MM|1351^7^0;1225^7^0;846^7^0;263^7^0;34^7^0
-97443327|*Formates|D005561|42189|MH|RtM via: Formates;RtM via: formate;Forced Non-Leaf Node Lookup:formates|TI;AB|MM;RC|1351^7^0;1225^7^0;846^7^0;263^7^0;34^7^0;913^7^0
-97443327|Fermentation|D005285|6407|MH|RtM via: Fermentation|AB|MM;RC|1436^12^0
-97443327|Hydrogenase|D006864|4452|MH|RtM via: Hydrogenase|AB|MM;RC|807^11^0
-97443327|Succinate|D019802|4150|ET|Entry Term Replacement for "Succinic Acid";RtM via: succinate|AB|MM;RC|1028^9^0;619^9^0;252^9^0
-97443327|Cellobiose|D002475|3607|MH|RtM via: Cellobiose|AB|MM;RC|453^10^0
-97443327|Acetates|D000085|2716|MH|RtM via: Acetate|AB|MM;RC|1016^7^0;513^7^0;243^7^0
-97443327|Phosphoenolpyruvate|D010728|2228|MH|RtM via: Phosphoenolpyruvate|AB|MM;RC|196^19^0
-97443327|Pyruvate|D019289|1708|ET|Entry Term Replacement for "Pyruvic Acid";RtM via: Pyruvate|AB|MM;RC|973^8^0
-97443327|*Physical Phenomena|D055585|1326|MH|RtM via: Flux|TI|MM|60^4^0
-97443327|Cellulose|D002482|1179|MH|RtM via: Cellulose|AB|MM;RC|439^9^0
-97443327|Carbon Dioxide|D002245|1063|MH|||RC
-97443327|Succinates|D013386|1029|MH|RtM via: Succinates|AB|MM;RC|1028^9^0;619^9^0;252^9^0
-97408530|Animals|D000818|4533|CT|CT Text Lookup: animal|AB|MM;RC|260^6^0
-97408530|*Confidence Intervals|D016001|3533|MH|RtM via: Confidence Intervals;Forced Leaf Node Lookup:confidence intervals|TI;AB|MM|1569^2^0;1404^2^0;680^2^0;157^20^0;33^20^0
-97408530|Pedigree|D010375|996|MH|RtM via: genetic pedigree|AB|MM;RC|1355^8^0;411^8^0
-97408530|Phenotype|D010641|961|MH|RtM via: Trait|AB|MM;RC|232^5^0
-97408530|Models, Genetic|D008957|652|MH|||RC
-97408530|Breeding|D001947|637|MH|||RC
-97408530|*Research Design|D012107|426|MH|RtM via: Test Method|TI;AB|MM|1516^6^0;102^6^0;76^6^0
-97408530|*Health Services|D006296|231|MH|RtM via: Test Method|TI;AB|MM|1516^6^0;102^6^0;76^6^0
-97453431|dornase alfa|C568813|3463|NM|RtM via: Dornase Alfa;Forced SCR Leaf Node Lookup:rhdnase|TI|MM|21^7^0
-97453431|*Deoxyribonuclease I|D003850|3462|HM|RtM via: Dornase Alfa|TI|MM;RC|21^7^0
-97453431|Models, Statistical|D015233|1058|MH|||RC
-97453431|Software|D012984|725|MH|RtM via: Computer software|AB|MM;RC|375^8^0
-97453431|Recurrence|D012008|569|MH|||RC
-97453431|*Databases, Genetic|D030541|567|MH|RtM via: Episodic|TI;AB|MM|165^9^0;46^9^0
-97453431|Computer Simulation|D003198|471|MH|||RC
+97479605|*Cerebral Blood Flow|D002560|96|ET|Entry Term Replacement for "Cerebrovascular Circulation";RtM via: Cerebral Blood Flow;RtM via: Cerebrovascular Circulation;Forced Non-Leaf Node Lookup:cerebral blood flows|TI;AB|MM|1249^3^0;1204^3^0;1108^3^0;837^3^0;422^3^0;283^3^0;115^19^0;37^19^0
+97479605|Brain|D001921|45|MH|RtM via: Brain|AB|MM|203^5^0
+97479605|Autoregulation|D006706|4|ET|Entry Term Replacement for "Homeostasis";RtM via: Homeostasis|AB|MM|1356^14^0
+97479605|Hypoxia-Ischemia, Brain|D020925|4|MH|RtM via: Hypoxic-Ischemic Encephalopathy|AB|MM|512^31^0
+97479605|Neurologic Examination|D009460|1|MH|RtM via: Neurologic Examination|AB|MM|767^31^0;672^30^0
+97479605|Death|D003643|0|MH|RtM via: Cessation of life;RtM via: Death (finding)|AB|MM|639^4^0
+97479605|Intellectual Disability|D008607|0|MH|RtM via: Low IQ|AB|MM|1228^8^0
+97479605|Intelligence Tests|D007361|0|MH|RtM via: Intelligence Tests|AB|MM|726^20^0
+97479605|Survivors|D017741|0|MH|RtM via: Survivors|AB|MM|652^9^0
+98018928|Cricetinae|D006224|27716|CT|CT Text Lookup: hamster|TI|MM;RC|103^7^0;457^7^0
+98018928|Animals|D000818|27716|CT|CT Text Lookup: hamster|TI|MM;RC|103^7^0
+98018928|*Bupivacaine|D002045|26716|MH|RtM via: bupivacaine;checkForceMH Boosted;Forced Non-Leaf Node Lookup:bupivacaine|TI;AB|MM;RC|1306^11^0;1071^11^0;660^11^0;638^11^0;366^11^0;151^11^0;21^11^0;1154^11^0
+98018928|*Myocytes, Cardiac|D032383|13819|MH|RtM via: Myocytes, Cardiac;Forced Leaf Node Lookup:cardiomyocytes|TI;AB|MM;RC|408^14^0;85^14^0
+98018928|*Heart Ventricles|D006352|12549|MH|RtM via: Heart Ventricle|TI;AB|MM;RC|465^10^0;73^11^0
+98018928|Anesthetics, Local|D000779|3547|MH|RtM via: Local Anesthetics|AB|MM;RC|134^16^0
+98018928|Calcium Channels, L-Type|D020746|2581|MH|||RC
+98018928|*Calcium, Dietary|D002136|2193|MH|RtM via: Calcium, Dietary|TI|MM|54^7^0
+98018928|Patch-Clamp Techniques|D018408|1258|MH|RtM via: Patch-Clamp Techniques|AB|MM;RC|560^18^0
+98018928|Calcium Channel Blockers|D002121|1135|MH|||RC
+97443327|*Hydrogen|D006859|1453|MH|RtM via: hydrogen;checkForceMH Boosted;Forced Non-Leaf Node Lookup:hydrogen|TI|MM|46^8^0
+97443327|*Carbon|D002244|769|MH|RtM via: Carbon;checkForceMH Boosted;Forced Non-Leaf Node Lookup:carbon|TI;AB|MM|1418^6^0;93^6^0
+97443327|Ruminococcus flavefaciens|C000637997|501|NM|RtM via: Ruminococcus flavefaciens;Forced New Lookup:ruminococcus flavefaciens|TI;AB|MM|319^25^0;103^25^0
+97443327|FD 1|C016882|212|NM|Forced SCR Leaf Node Lookup:fd-1|TI;AB|MM|129^4^0;345^4^0
+97443327|formic acid|C030544|2167|NM|RtM via: formate|TI;AB|MM|1351^7^0;1225^7^0;846^7^0;263^7^0;34^7^0
+97443327|*Formates|D005561|2166|MH|RtM via: Formates;RtM via: formate;Forced Non-Leaf Node Lookup:formates|TI;AB|MM|1351^7^0;1225^7^0;846^7^0;263^7^0;34^7^0;913^7^0
+97443327|*Physical Phenomena|D055585|528|MH|RtM via: Flux|TI|MM|60^4^0
+97443327|*Ruminococcus|D045857|500|HM|RtM via: Ruminococcus flavefaciens|TI;AB|MM|319^25^0;103^25^0
+97443327|Hydrogenase|D006864|41|MH|RtM via: Hydrogenase|AB|MM|807^11^0
+97443327|Succinate|D019802|11|ET|Entry Term Replacement for "Succinic Acid";RtM via: succinate|AB|MM|1028^9^0;619^9^0;252^9^0
+97443327|malate dehydrogenase (decarboxylating)|C030574|9|NM|RtM via: NADP-Dependent Malic Enzyme|AB|MM|653^20^0
+97443327|Malate Dehydrogenase|D008291|8|HM|RtM via: Malate Dehydrogenase;RtM via: NADP-Dependent Malic Enzyme|AB|MM|653^20^0
+97443327|Fermentation|D005285|6|MH|RtM via: Fermentation|AB|MM|1436^12^0
+97443327|Acetate Kinase|D000084|3|MH|RtM via: Acetate Kinase|AB|MM|579^14^0
+97443327|Culture, Batch|D061249|3|ET|Entry Term Replacement for "Batch Cell Culture Techniques";RtM via: Batch Cell Culture Techniques|AB|MM|759^13^0
+97443327|Succinates|D013386|3|MH|RtM via: Succinates|AB|MM|1028^9^0;619^9^0;252^9^0
+97443327|13C NMR|D066241|2|ET|Entry Term Replacement for "Carbon-13 Magnetic Resonance Spectroscopy";RtM via: Carbon-13 Magnetic Resonance Spectroscopy|AB|MM|859^7^0
+97443327|Carboxylic Acids|D002264|2|MH|RtM via: carboxylate|AB|MM|598^12^0
+97408530|Animals|D000818|1898|CT|CT Text Lookup: animal|AB|MM|260^6^0
+97408530|*Confidence Intervals|D016001|898|MH|RtM via: Confidence Intervals;Forced Leaf Node Lookup:confidence intervals|TI;AB|MM|1569^2^0;966^2^0;903^20^0;680^2^0;157^20^0;33^20^0
+97408530|*Research Design|D012107|192|MH|RtM via: Test Method|TI;AB|MM|1516^6^0;102^6^0;76^6^0
+97408530|*Health Services|D006296|180|MH|RtM via: Test Method|TI;AB|MM|1516^6^0;102^6^0;76^6^0
+97408530|Disease Models, Animal|D004195|0|MH|RtM via: Animal Disease Models|AB|MM|260^12^0
+97408530|Pedigree|D010375|0|MH|RtM via: genetic pedigree|AB|MM|1355^8^0;411^8^0
+97408530|Phenotype|D010641|0|MH|RtM via: Trait|AB|MM|232^5^0
+97453431|dornase alfa|C568813|3148|NM|Forced SCR Leaf Node Lookup:rhdnase|TI|MM|21^7^0
+97453431|*Deoxyribonuclease I|D003850|3147|HM|RtM via: dornase alfa|TI|MM;RC|21^7^0
+97453431|Models, Statistical|D015233|1045|MH|||RC
+97453431|Software|D012984|663|MH|RtM via: Computer software|AB|MM;RC|375^8^0
+97453431|Computer Simulation|D003198|472|MH|||RC
+97453431|Recurrence|D012008|334|MH|||RC
