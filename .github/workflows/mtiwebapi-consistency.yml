@@ -36,4 +36,4 @@ jobs:
       
       - name: Check file difference
         working-directory: ./results
-        run: diff <(grep -vc ^$ batch_expected_output.txt) <(grep -vc ^$ batch_output.txt)
+        run: if [ $( grep -vc ^$ batch_output.txt ) -lt 10 ]; then exit 1; fi
